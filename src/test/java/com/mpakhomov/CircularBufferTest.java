@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 
-import com.sun.corba.se.impl.orb.ParserTable;
 import org.junit.Test;
 
 public class CircularBufferTest {
