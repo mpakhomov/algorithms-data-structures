@@ -75,7 +75,7 @@ public class BinarySearchTreeTest {
     public void testCorrectBST() {
         assertThat("This should be a correct BST!", BinarySearchTree.isBST(treeCorrect.getRoot()),
                 is(equalTo(true)));
-        assertThat("This should be a correct BST!", BinarySearchTree.isBST(treeCorrect.getRoot()),
+        assertThat("This should be a correct BST!", BinarySearchTree.isBSTInOrder(treeCorrect.getRoot()),
                 is(equalTo(true)));
     }
 
