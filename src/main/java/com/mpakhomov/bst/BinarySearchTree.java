@@ -1,5 +1,8 @@
 package com.mpakhomov.bst;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BinarySearchTree {
 
     private TreeNode root;
@@ -144,12 +147,48 @@ public class BinarySearchTree {
         }
     }
 
-    static public void printInOrder(TreeNode node) {
+    static public List<Integer> TraverseInOrder(TreeNode node) {
+        List<Integer> nodes = new ArrayList<>();
+        return TraverseInOrderRecursive(node, nodes);
+    }
+
+    static private List<Integer> TraverseInOrderRecursive(TreeNode node, List<Integer> nodes) {
         if (node == null) {
-            return;
+            return nodes;
         }
-        printInOrder(node.left);
-        System.out.print(node.data + ", ");
-        printInOrder(node.right);
+        TraverseInOrderRecursive(node.left, nodes);
+        nodes.add(node.data);
+        TraverseInOrderRecursive(node.right, nodes);
+        return nodes;
+    }
+
+    static public List<Integer> traversePreOrder(TreeNode node) {
+        List<Integer> nodes = new ArrayList<>();
+        return traversePreOrderRecursive(node, nodes);
+    }
+
+    static private List<Integer> traversePreOrderRecursive(TreeNode node, List<Integer> nodes) {
+        if (node == null) {
+            return nodes;
+        }
+        nodes.add(node.data);
+        traversePreOrderRecursive(node.left, nodes);
+        traversePreOrderRecursive(node.right, nodes);
+        return nodes;
+    }
+
+    static public List<Integer> traversePostOrder(TreeNode node) {
+        List<Integer> nodes = new ArrayList<>();
+        return traversePostOrderRecusrive(node, nodes);
+    }
+
+    static private List<Integer> traversePostOrderRecusrive(TreeNode node, List<Integer> nodes) {
+        if (node == null) {
+            return nodes;
+        }
+        traversePostOrderRecusrive(node.left, nodes);
+        traversePostOrderRecusrive(node.right, nodes);
+        nodes.add(node.data);
+        return nodes;
     }
 }

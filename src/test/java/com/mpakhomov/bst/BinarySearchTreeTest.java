@@ -2,6 +2,10 @@ package com.mpakhomov.bst;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -85,8 +89,43 @@ public class BinarySearchTreeTest {
                 is(equalTo(false)));
         assertThat("This should NOT be a correct BST!", BinarySearchTree.isBSTInOrder(treeIncorrect.getRoot()),
                 is(equalTo(false)));
-        BinarySearchTree.printInOrder(treeCorrect.getRoot());
+        BinarySearchTree.TraverseInOrder(treeCorrect.getRoot());
     }
 
+    @Test
+    public void testInOrder() {
+        BinarySearchTree bst = new BinarySearchTree();
+        bst.add(40);
+        bst.add(78);
+        bst.add(25);
+        bst.add(10);
+        bst.add(32);
+        List<Integer> nodes = BinarySearchTree.TraverseInOrder(bst.getRoot());
+        assertThat(nodes, contains(10, 25, 32, 40, 78));
+    }
+
+    @Test
+    public void testPreOrder() {
+        BinarySearchTree bst = new BinarySearchTree();
+        bst.add(40);
+        bst.add(78);
+        bst.add(25);
+        bst.add(10);
+        bst.add(32);
+        List<Integer> nodes = BinarySearchTree.traversePreOrder(bst.getRoot());
+        assertThat(nodes, contains(40, 25, 10, 32, 78));
+    }
+
+    @Test
+    public void testPostOrder() {
+        BinarySearchTree bst = new BinarySearchTree();
+        bst.add(40);
+        bst.add(78);
+        bst.add(25);
+        bst.add(10);
+        bst.add(32);
+        List<Integer> nodes = BinarySearchTree.traversePostOrder(bst.getRoot());
+        assertThat(nodes, contains(10, 32, 25, 78, 40));
+    }
 
 }
