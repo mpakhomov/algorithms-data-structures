@@ -60,7 +60,7 @@ public class RedBlackTree<K extends Comparable<K>, V> {
 
     /**
      * Insert an entry to Binary Search Tree (BST). It's the first step of {@link #put(Comparable, Object)}
-     * At this step we insert a node to RBT as it wes a Binary Search Tree, we ignore coloring, balancing etc.
+     * At this step we insert a node to RBT as it were an ordinary Binary Search Tree, we ignore coloring, balancing etc.
      * All RBT invariants are to be fixed later on.
      *
      * @param entry an entry to ne inserted
@@ -105,14 +105,33 @@ public class RedBlackTree<K extends Comparable<K>, V> {
      *
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
-     *
-     * @return the previous value associated with {@code key}, or
-     *         {@code null} if there was no mapping for {@code key}.
-     *         (A {@code null} return can also indicate that the map
-     *         previously associated {@code null} with {@code key}.)
+     *              *
      */
-    public V put(K key, V value) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void put(K key, V value) {
+        Entry<K, V> entry = new Entry<K, V>(key, value, RED);
+        insertIntoBst(entry);
+        rbInsertFixUp(entry);
+    }
+
+    private static <K,V> Entry<K,V> parentOf(Entry<K,V> p) {
+        return (p == null ? null: p.parent);
+    }
+
+    private static <K,V> Entry<K,V> leftOf(Entry<K,V> p) {
+        return (p == null) ? null: p.left;
+    }
+
+    private static <K,V> Entry<K,V> rightOf(Entry<K,V> p) {
+        return (p == null) ? null: p.right;
+    }
+
+    /**
+     * Fix rbt properties after insertion of a new {@code entry}
+     *
+     * @param entry red-black tree entry
+     */
+    public void rbInsertFixUp(Entry<K, V> entry) {
+
     }
 
     /**
@@ -212,6 +231,32 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         tree.rotateRight(seven);
 
         printInOrder(tree.getRoot());
+
+        testTreeFromTheBook();
+    }
+
+    static void testTreeFromTheBook() {
+        RedBlackTree.Entry<Integer, Integer> root = new RedBlackTree.Entry<>(11, 11, BLACK);
+        RedBlackTree.Entry<Integer, Integer> n14 = new RedBlackTree.Entry<>(14, 14, BLACK);
+        RedBlackTree.Entry<Integer, Integer> n2 = new RedBlackTree.Entry<>(2, 2, RED);
+        RedBlackTree.Entry<Integer, Integer> n1 = new RedBlackTree.Entry<>(1, 1, BLACK);
+        RedBlackTree.Entry<Integer, Integer> n7 = new RedBlackTree.Entry<>(7, 7, BLACK);
+        RedBlackTree.Entry<Integer, Integer> n5 = new RedBlackTree.Entry<>(5, 5, RED);
+        RedBlackTree.Entry<Integer, Integer> n8 = new RedBlackTree.Entry<>(8, 8, RED);
+        RedBlackTree.Entry<Integer, Integer> n15 = new RedBlackTree.Entry<>(15, 15, RED);
+
+        RedBlackTree tree = new RedBlackTree();
+        tree.insertIntoBst(root);
+        tree.insertIntoBst(n14);
+        tree.insertIntoBst(n2);
+        tree.insertIntoBst(n1);
+        tree.insertIntoBst(n7);
+        tree.insertIntoBst(n5);
+        tree.insertIntoBst(n8);
+        tree.insertIntoBst(n15);
+
+        System.out.println("");
+        printInOrder(root);
     }
 
     static private void printInOrder(RedBlackTree.Entry node) {
