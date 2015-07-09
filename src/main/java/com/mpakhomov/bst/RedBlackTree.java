@@ -113,6 +113,7 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         rbInsertFixUp(entry);
     }
 
+    // utility methods to avoid NPE when p is null
     private static <K,V> Entry<K,V> parentOf(Entry<K,V> p) {
         return (p == null ? null: p.parent);
     }
@@ -125,13 +126,79 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         return (p == null) ? null: p.right;
     }
 
+    private static <K,V> boolean colorOf(Entry<K,V> p) {
+        return (p == null) ? BLACK: p.color;
+    }
+
+    private static <K,V> void setColor(Entry<K,V> p, boolean c) {
+        if (p != null) {
+            p.color = c;
+        }
+    }
+
     /**
      * Fix rbt properties after insertion of a new {@code entry}
      *
-     * @param entry red-black tree entry
+     * @param z red-black tree entry
      */
-    public void rbInsertFixUp(Entry<K, V> entry) {
+    public void rbInsertFixUp(Entry<K, V> z) {
+        z.color = RED;
 
+        // TODO: is it needed to check that z!= null && z != root
+        while(/*z != null &&*/ z != root && z.parent.color == RED) {
+            if (parentOf(z) == leftOf(parentOf(parentOf(z)))) { // TODO: is NPE possible without leftOf/parentOf?
+                // z and its parent (p) is in the left subtree of its grandparent (g)
+
+                // y is an uncle of z (its a right child of its grandparent)
+                Entry<K, V> y = rightOf(parentOf(parentOf(z)));
+                if (colorOf(y) == RED) {
+                    // Case 1. recoloring
+                    setColor(parentOf(z), BLACK);
+                    setColor(y, BLACK);
+                    setColor(parentOf(parentOf(z)), RED);
+                    // move z two levels up in the tree
+                    z = parentOf(parentOf(z));
+                } else {
+                    if (z == rightOf(parentOf(z))) {
+                        // Case 2: z is a right child of its parent
+                        z = parentOf(z);
+                        rotateLeft(z);
+                    }
+                    // Case 3: z is a left child of its parent
+                    setColor(parentOf(z), BLACK);
+                    setColor(parentOf(parentOf(z)), RED);
+                    rotateRight(parentOf(parentOf(z)));
+                }
+
+            } else  {
+                // z and its parent (p) is in the right subtree of its grandparent (g)
+
+                // y is an uncle of z (it's a left child of its grandparent)
+                Entry<K, V> y = leftOf(parentOf(parentOf(z)));
+                if (colorOf(y) == RED) {
+                    // Case 1. recoloring
+                    setColor(parentOf(z), BLACK);
+                    setColor(y, BLACK);
+                    setColor(parentOf(parentOf(z)), RED);
+                    // move z two levels up in the tree
+                    z = parentOf(parentOf(z));
+                } else {
+                    if (z == leftOf(parentOf(z))) {
+                        // Case 2: z is a left child of its parent
+                        z = parentOf(z);
+                        rotateRight(z);
+                    }
+                    // Case 3: z is a left child of its parent
+                    setColor(parentOf(z), BLACK);
+                    setColor(parentOf(parentOf(z)), RED);
+                    rotateLeft(parentOf(parentOf(z)));
+                }
+
+            } // if (parentOf(z) == leftOf(parentOf(parentOf(z)))) {
+
+        } // while
+
+        root.color = BLACK;
     }
 
     /**
@@ -233,6 +300,7 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         printInOrder(tree.getRoot());
 
         testTreeFromTheBook();
+        testInsertion();
     }
 
     static void testTreeFromTheBook() {
@@ -257,6 +325,23 @@ public class RedBlackTree<K extends Comparable<K>, V> {
 
         System.out.println("");
         printInOrder(root);
+    }
+
+    static void testInsertion() {
+
+        RedBlackTree tree = new RedBlackTree();
+        tree.put(11, 11);
+        tree.put(14, 14);
+        tree.put(2, 2);
+        tree.put(1, 1);
+        tree.put(7, 7);
+        tree.put(5, 5);
+        tree.put(8, 8);
+        tree.put(15, 15);
+        tree.put(4, 4);
+
+        System.out.println("");
+        printInOrder(tree.getRoot());
     }
 
     static private void printInOrder(RedBlackTree.Entry node) {
