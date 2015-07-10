@@ -10,11 +10,18 @@ package com.mpakhomov.bst;
  */
 public class RedBlackTree<K extends Comparable<K>, V> {
 
-    private final static boolean BLACK = true;
-    private final static boolean RED = false;
+    public final static boolean BLACK = true;
+    public final static boolean RED = false;
 
     private int size;
     private Entry<K, V> root;
+
+    // TODO:
+    // Implement iterative in-order tree walk (traversion).
+    // Hint: An easy solution uses a stack as an auxiliary data structure.
+    // A more complicated, but elegant, solution uses no stack but assumes that we can test two pointers for equality
+    // TODO:
+    // Implement: breadth-first (level-order) tree traversal
 
 
     private static class Entry<K, V> {
@@ -136,6 +143,20 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         }
     }
 
+    Entry<K, V> treeSearch(K key) {
+        Entry<K, V> x = root;
+        while (x != null && key.compareTo(x.key) != 0) {
+            if (key.compareTo(x.key) < 0) {
+                // search in left subtree
+                x = x.left;
+            } else {
+                // right
+                x = x.right;
+            }
+        }
+        return x;
+    }
+
     /**
      * Fix rbt properties after insertion of a new {@code entry}
      *
@@ -144,30 +165,34 @@ public class RedBlackTree<K extends Comparable<K>, V> {
     public void rbInsertFixUp(Entry<K, V> z) {
         z.color = RED;
 
-        // TODO: is it needed to check that z!= null && z != root
-        while(/*z != null &&*/ z != root && z.parent.color == RED) {
-            if (parentOf(z) == leftOf(parentOf(parentOf(z)))) { // TODO: is NPE possible without leftOf/parentOf?
+        // in the book there is no z != root check, because if z is root, then its parent is
+        // a black sentinel (fake) element Nil. In pseudo-code z.p.color == RED doesn't cause
+        // any exceptions, but in real java code NPE will be thrown
+        while(z != root && z.parent.color == RED) {
+            if (parentOf(z) == leftOf(parentOf(parentOf(z)))) {
                 // z and its parent (p) is in the left subtree of its grandparent (g)
 
-                // y is an uncle of z (its a right child of its grandparent)
+                // y is an uncle of z (it's a right child of its grandparent)
                 Entry<K, V> y = rightOf(parentOf(parentOf(z)));
                 if (colorOf(y) == RED) {
                     // Case 1. recoloring
                     setColor(parentOf(z), BLACK);
                     setColor(y, BLACK);
                     setColor(parentOf(parentOf(z)), RED);
-                    // move z two levels up in the tree
+                    // move z two levels up in the tree. in other words: it moves a violation of '2 red in a row'
+                    // property two levels up in the tree
                     z = parentOf(parentOf(z));
                 } else {
                     if (z == rightOf(parentOf(z))) {
-                        // Case 2: z is a right child of its parent
+                        // Case 2: z is a right child of its parent. Transform it to case 3
                         z = parentOf(z);
                         rotateLeft(z);
                     }
-                    // Case 3: z is a left child of its parent
+                    // Case 3: z is a left child of its parent.
                     setColor(parentOf(z), BLACK);
                     setColor(parentOf(parentOf(z)), RED);
                     rotateRight(parentOf(parentOf(z)));
+                    // Case 3 finally fixes all violations of RBT invariants
                 }
 
             } else  {
@@ -184,14 +209,15 @@ public class RedBlackTree<K extends Comparable<K>, V> {
                     z = parentOf(parentOf(z));
                 } else {
                     if (z == leftOf(parentOf(z))) {
-                        // Case 2: z is a left child of its parent
+                        // Case 2: z is a left child of its parent. Transform it to case 3.
                         z = parentOf(z);
                         rotateRight(z);
                     }
-                    // Case 3: z is a left child of its parent
+                    // Case 3: z is a right child of its parent
                     setColor(parentOf(z), BLACK);
                     setColor(parentOf(parentOf(z)), RED);
                     rotateLeft(parentOf(parentOf(z)));
+                    // Case 3 finally fixes all violations of RBT invariants
                 }
 
             } // if (parentOf(z) == leftOf(parentOf(parentOf(z)))) {
@@ -269,38 +295,95 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         x.parent = y;
     }
 
+    /**
+     * Replace subtree u with subtree v. From the book: it replaces the subtree rooted at node u with
+     * the subtree rooted at node v, node u's parent becomes node v's parent, and u's
+     * parent ends up having v as its appropriate child
+     *
+     * @param u subtree which is to be raplaced
+     * @param v a replacement for subtree u
+     */
+    void transplant(Entry<K, V> u, Entry<K, V> v) {
+        if (u == root) {
+            root = v;
+        } else if (u == u.parent.left){
+            // u is a left child
+            u.parent.left = v;
+        } else {
+            // u is a right child
+            u.parent.right = v;
+        }
+        if (v != null) {
+            v.parent = u.parent;
+        }
+    }
+
+    /**
+     * Find the successor for the given node {@code x}
+     * @param x tree entry we search the successor for
+     * @param <K>
+     * @param <V>
+     * @return returns the successor of the specified entry, or null if no such
+     */
+    static <K, V> Entry<K, V> treeSuccessor(Entry<K, V> x) {
+        if (x == null) {
+            return null;
+        }
+
+        // if x's right subtree is not empty, that the successor is the leftmost element in that subtree
+        if (x.right != null) {
+            return treeMinimum(x.right);
+        }
+
+        // otherwise go up the tree until find x's ancestor which is a left child of its parent
+        Entry<K, V> y = x.parent;
+        while (y != null && x == y.right) {
+            x = y;
+            y = y.parent;
+        }
+        return y;
+    }
+
+    /**
+     * Find a minimum element in the subtree rooted at the given node {@code x}
+     * We assume that x is not null
+     *
+     * @param x
+     * @return
+     */
+    static <K, V> Entry<K, V> treeMinimum(Entry<K, V> x) {
+        if (x == null) {
+            throw new IllegalArgumentException("x is null");
+        }
+        while (x.left != null ) {
+            x = x.left;
+        }
+        return x;
+    }
+
+    /**
+     * Find a maximum element in the subtree rooted at the given node {@code x}
+     * We assume that x is not null
+     *
+     * @param x
+     * @return
+     */
+    static <K, V> Entry<K, V> treeMaximum(Entry<K, V> x) {
+        if (x == null) {
+            throw new IllegalArgumentException("x is null");
+        }
+        while (x.right != null ) {
+            x = x.right;
+        }
+        return x;
+    }
+
 
     public static void main(String[] args) {
-        // rbt 1, 2, 3, 4, 5, 6, 7
-        RedBlackTree.Entry<Integer, Integer> root = new RedBlackTree.Entry<>(4, 4, BLACK);
-        RedBlackTree.Entry<Integer, Integer> two = new RedBlackTree.Entry<>(2, 2, BLACK);
-        RedBlackTree.Entry<Integer, Integer> six = new RedBlackTree.Entry<>(6, 6, BLACK);
-        RedBlackTree.Entry<Integer, Integer> one = new RedBlackTree.Entry<>(1, 1, RED);
-        RedBlackTree.Entry<Integer, Integer> three = new RedBlackTree.Entry<>(3, 3, RED);
-        RedBlackTree.Entry<Integer, Integer> five = new RedBlackTree.Entry<>(5, 5, RED);
-        RedBlackTree.Entry<Integer, Integer> seven = new RedBlackTree.Entry<>(7, 7, RED);
-
-        RedBlackTree<Integer, Integer> tree = new RedBlackTree<>();
-        tree.insertIntoBst(root);
-        tree.insertIntoBst(two);
-        tree.insertIntoBst(six);
-        tree.insertIntoBst(one);
-        tree.insertIntoBst(three);
-        tree.insertIntoBst(five);
-        tree.insertIntoBst(seven);
-
-        printInOrder(tree.getRoot());
-
-        tree.rotateLeft(six);
-
-        printInOrder(tree.getRoot());
-
-        tree.rotateRight(seven);
-
-        printInOrder(tree.getRoot());
-
-        testTreeFromTheBook();
-        testInsertion();
+//        testTreeFromTheBook();
+//        testInsertion();
+//        testAnotherInsertion();
+        testThirdInsertion();
     }
 
     static void testTreeFromTheBook() {
@@ -327,6 +410,28 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         printInOrder(root);
     }
 
+    static void testThirdInsertion() {
+
+        RedBlackTree tree = new RedBlackTree();
+        tree.put(1, 1);
+        tree.put(2, 2);
+        tree.put(3, 3);
+        tree.put(4, 4);
+        tree.put(5, 5);
+        tree.put(6, 6);
+        tree.put(7, 7);
+        tree.put(8, 8);
+
+        System.out.println("");
+        printInOrder(tree.getRoot());
+        System.out.println("");
+        System.out.println(treeMinimum(tree.getRoot()).key);
+        System.out.println(treeMaximum(tree.getRoot()).key);
+        System.out.println(treeSuccessor(tree.getRoot()).key);
+        Entry<Integer, Integer> x = tree.treeSearch(3);
+        System.out.println(treeSuccessor(x).key);
+    }
+
     static void testInsertion() {
 
         RedBlackTree tree = new RedBlackTree();
@@ -339,6 +444,23 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         tree.put(8, 8);
         tree.put(15, 15);
         tree.put(4, 4);
+
+        System.out.println("");
+        printInOrder(tree.getRoot());
+    }
+
+    static void testAnotherInsertion() {
+
+        RedBlackTree tree = new RedBlackTree();
+        tree.put(7, 7);
+        tree.put(3, 3);
+        tree.put(18, 18);
+        tree.put(10, 10);
+        tree.put(22, 22);
+        tree.put(8, 8);
+        tree.put(11, 11);
+        tree.put(26, 26);
+        tree.put(15, 15);
 
         System.out.println("");
         printInOrder(tree.getRoot());
