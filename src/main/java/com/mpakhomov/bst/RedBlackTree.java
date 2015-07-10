@@ -72,7 +72,7 @@ public class RedBlackTree<K extends Comparable<K>, V> {
      *
      * @param entry an entry to ne inserted
      */
-    void insertIntoBst(Entry<K, V> entry) {
+    void insertToBst(Entry<K, V> entry) {
         if (root == null) {
             root = entry;
             size++;
@@ -116,7 +116,7 @@ public class RedBlackTree<K extends Comparable<K>, V> {
      */
     public void put(K key, V value) {
         Entry<K, V> entry = new Entry<K, V>(key, value, RED);
-        insertIntoBst(entry);
+        insertToBst(entry);
         rbInsertFixUp(entry);
     }
 
@@ -141,6 +141,10 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         if (p != null) {
             p.color = c;
         }
+    }
+
+    private static <K,V> K keyOf(Entry<K,V> p) {
+        return (p == null) ? null : p.key;
     }
 
     Entry<K, V> treeSearch(K key) {
@@ -325,19 +329,47 @@ public class RedBlackTree<K extends Comparable<K>, V> {
      * @param <V>
      * @return returns the successor of the specified entry, or null if no such
      */
-    static <K, V> Entry<K, V> treeSuccessor(Entry<K, V> x) {
+    static <K, V> Entry<K, V> successor(Entry<K, V> x) {
         if (x == null) {
             return null;
         }
 
-        // if x's right subtree is not empty, that the successor is the leftmost element in that subtree
+        // if x's right subtree is not empty, that the successor is the minimum element in that subtree
         if (x.right != null) {
             return treeMinimum(x.right);
         }
 
         // otherwise go up the tree until find x's ancestor which is a left child of its parent
+        // in other words: go up the tree until we make a right turn
         Entry<K, V> y = x.parent;
         while (y != null && x == y.right) {
+            x = y;
+            y = y.parent;
+        }
+        return y;
+    }
+
+    /**
+     * Find the predecessor for the given node {@code x}
+     * @param x tree entry we search the predecessor for
+     * @param <K>
+     * @param <V>
+     * @return returns the predecessor of the specified entry, or null if no such
+     */
+    static <K, V> Entry<K, V> predecessor(Entry<K, V> x) {
+        if (x == null) {
+            return null;
+        }
+
+        // if x's left subtree is not empty, that the predecessor is the maximum element in that subtree
+        if (x.left != null) {
+            return treeMaximum(x.left);
+        }
+
+        // otherwise go up the tree until find x's ancestor which is a right child of its parent
+        // in other words: go up the tree until we make a left turn
+        Entry<K, V> y = x.parent;
+        while (y != null && x == y.left) {
             x = y;
             y = y.parent;
         }
@@ -397,14 +429,14 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         RedBlackTree.Entry<Integer, Integer> n15 = new RedBlackTree.Entry<>(15, 15, RED);
 
         RedBlackTree tree = new RedBlackTree();
-        tree.insertIntoBst(root);
-        tree.insertIntoBst(n14);
-        tree.insertIntoBst(n2);
-        tree.insertIntoBst(n1);
-        tree.insertIntoBst(n7);
-        tree.insertIntoBst(n5);
-        tree.insertIntoBst(n8);
-        tree.insertIntoBst(n15);
+        tree.insertToBst(root);
+        tree.insertToBst(n14);
+        tree.insertToBst(n2);
+        tree.insertToBst(n1);
+        tree.insertToBst(n7);
+        tree.insertToBst(n5);
+        tree.insertToBst(n8);
+        tree.insertToBst(n15);
 
         System.out.println("");
         printInOrder(root);
@@ -427,9 +459,12 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         System.out.println("");
         System.out.println(treeMinimum(tree.getRoot()).key);
         System.out.println(treeMaximum(tree.getRoot()).key);
-        System.out.println(treeSuccessor(tree.getRoot()).key);
-        Entry<Integer, Integer> x = tree.treeSearch(3);
-        System.out.println(treeSuccessor(x).key);
+        System.out.println(successor(tree.getRoot()).key);
+        Entry<Integer, Integer> x = tree.treeSearch(1);
+        System.out.println(keyOf(successor(x)));
+        System.out.println(keyOf(predecessor(x)));
+        x = tree.getRoot();
+        System.out.println(keyOf(predecessor(x)));
     }
 
     static void testInsertion() {
