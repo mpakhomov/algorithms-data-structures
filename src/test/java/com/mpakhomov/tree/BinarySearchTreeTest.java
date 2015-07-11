@@ -1,4 +1,4 @@
-package com.mpakhomov.bst;
+package com.mpakhomov.tree;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +20,13 @@ import static org.hamcrest.Matchers.nullValue;
  */
 public class BinarySearchTreeTest {
 
-    BinarySearchTree treeCorrect;
-    BinarySearchTree treeIncorrect;
+    BinarySearchTreeDeprecated treeCorrect;
+    BinarySearchTreeDeprecated treeIncorrect;
 
 
     @Before
     public void setUp() {
-        treeCorrect = new BinarySearchTree();
+        treeCorrect = new BinarySearchTreeDeprecated();
         treeCorrect.add(8);
         treeCorrect.add(3);
         treeCorrect.add(10);
@@ -37,12 +37,12 @@ public class BinarySearchTreeTest {
         treeCorrect.add(14);
         treeCorrect.add(13);
 
-        treeIncorrect = new BinarySearchTree();
+        treeIncorrect = new BinarySearchTreeDeprecated();
         treeIncorrect.add(10);
         treeIncorrect.add(5);
         treeIncorrect.add(15);
         treeIncorrect.add(20);
-        treeIncorrect.getRoot().getRight().setLeft(new BinarySearchTree.TreeNode(6));
+        treeIncorrect.getRoot().getRight().setLeft(new BinarySearchTreeDeprecated.TreeNode(6));
     }
 
     @Test
@@ -52,79 +52,79 @@ public class BinarySearchTreeTest {
 
     @Test
     public void testFindFound() {
-        BinarySearchTree.TreeNode node = treeCorrect.find(13);
+        BinarySearchTreeDeprecated.TreeNode node = treeCorrect.find(13);
         assertThat(node, is(notNullValue()));
         assertThat(node.getData(), is(equalTo(13)));
     }
 
     @Test
     public void testFindNotFound() {
-        BinarySearchTree.TreeNode node = treeCorrect.find(12);
+        BinarySearchTreeDeprecated.TreeNode node = treeCorrect.find(12);
         assertThat(node, is(nullValue()));
     }
 
     @Test
     public void testAddWithFind() {
-        BinarySearchTree.TreeNode node = treeCorrect.find(13);
+        BinarySearchTreeDeprecated.TreeNode node = treeCorrect.find(13);
         // add 0 to the left of 13. this should make a tree invalid BST tree
-        node.setLeft(new BinarySearchTree.TreeNode(0));
-        assertThat("This should NOT be a correct BST!", BinarySearchTree.isBST(treeCorrect.getRoot()),
+        node.setLeft(new BinarySearchTreeDeprecated.TreeNode(0));
+        assertThat("This should NOT be a correct BST!", BinarySearchTreeDeprecated.isBST(treeCorrect.getRoot()),
                 is(equalTo(false)));
-        assertThat("This should NOT be a correct BST!", BinarySearchTree.isBSTInOrder(treeCorrect.getRoot()),
+        assertThat("This should NOT be a correct BST!", BinarySearchTreeDeprecated.isBSTInOrder(treeCorrect.getRoot()),
                 is(equalTo(false)));
 
     }
 
     @Test
     public void testCorrectBST() {
-        assertThat("This should be a correct BST!", BinarySearchTree.isBST(treeCorrect.getRoot()),
+        assertThat("This should be a correct BST!", BinarySearchTreeDeprecated.isBST(treeCorrect.getRoot()),
                 is(equalTo(true)));
-        assertThat("This should be a correct BST!", BinarySearchTree.isBSTInOrder(treeCorrect.getRoot()),
+        assertThat("This should be a correct BST!", BinarySearchTreeDeprecated.isBSTInOrder(treeCorrect.getRoot()),
                 is(equalTo(true)));
     }
 
     @Test
     public void testIncorrectBST() {
-        assertThat("This should NOT be a correct BST!", BinarySearchTree.isBST(treeIncorrect.getRoot()),
+        assertThat("This should NOT be a correct BST!", BinarySearchTreeDeprecated.isBST(treeIncorrect.getRoot()),
                 is(equalTo(false)));
-        assertThat("This should NOT be a correct BST!", BinarySearchTree.isBSTInOrder(treeIncorrect.getRoot()),
+        assertThat("This should NOT be a correct BST!", BinarySearchTreeDeprecated.isBSTInOrder(treeIncorrect.getRoot()),
                 is(equalTo(false)));
-        BinarySearchTree.TraverseInOrder(treeCorrect.getRoot());
+        BinarySearchTreeDeprecated.TraverseInOrder(treeCorrect.getRoot());
     }
 
     @Test
     public void testInOrder() {
-        BinarySearchTree bst = new BinarySearchTree();
+        BinarySearchTreeDeprecated bst = new BinarySearchTreeDeprecated();
         bst.add(40);
         bst.add(78);
         bst.add(25);
         bst.add(10);
         bst.add(32);
-        List<Integer> nodes = BinarySearchTree.TraverseInOrder(bst.getRoot());
+        List<Integer> nodes = BinarySearchTreeDeprecated.TraverseInOrder(bst.getRoot());
         assertThat(nodes, contains(10, 25, 32, 40, 78));
     }
 
     @Test
     public void testPreOrder() {
-        BinarySearchTree bst = new BinarySearchTree();
+        BinarySearchTreeDeprecated bst = new BinarySearchTreeDeprecated();
         bst.add(40);
         bst.add(78);
         bst.add(25);
         bst.add(10);
         bst.add(32);
-        List<Integer> nodes = BinarySearchTree.traversePreOrder(bst.getRoot());
+        List<Integer> nodes = BinarySearchTreeDeprecated.traversePreOrder(bst.getRoot());
         assertThat(nodes, contains(40, 25, 10, 32, 78));
     }
 
     @Test
     public void testPostOrder() {
-        BinarySearchTree bst = new BinarySearchTree();
+        BinarySearchTreeDeprecated bst = new BinarySearchTreeDeprecated();
         bst.add(40);
         bst.add(78);
         bst.add(25);
         bst.add(10);
         bst.add(32);
-        List<Integer> nodes = BinarySearchTree.traversePostOrder(bst.getRoot());
+        List<Integer> nodes = BinarySearchTreeDeprecated.traversePostOrder(bst.getRoot());
         assertThat(nodes, contains(10, 32, 25, 78, 40));
     }
 

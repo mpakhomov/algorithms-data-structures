@@ -1,9 +1,10 @@
-package com.mpakhomov.bst;
+package com.mpakhomov.tree;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BinarySearchTree {
+@Deprecated
+public class BinarySearchTreeDeprecated {
 
     private TreeNode root;
     int size;

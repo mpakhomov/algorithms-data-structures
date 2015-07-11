@@ -1,4 +1,4 @@
-package com.mpakhomov.bst;
+package com.mpakhomov.tree;
 
 
 import java.util.*;
