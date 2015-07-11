@@ -1,6 +1,8 @@
 package com.mpakhomov.bst;
 
 
+import java.util.*;
+
 /**
  * Based on Introduction to Algorithms, third edition
  * By Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein
@@ -410,6 +412,75 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         return x;
     }
 
+    /**
+     * Breadth-first traversal (level by level). Iterative implementation
+     *
+     * @param start traverse BST starting at node {@start}
+     * @param <K>
+     * @param <V>
+     */
+    static <K, V> void traverseByLevelsIterative(Entry<K, V> start) {
+        if (start == null) {
+            return;
+        }
+
+        int level = 0;
+        Queue<Entry<K, V>> nextLevel = new ArrayDeque<>();
+        nextLevel.add(start);
+
+        while (!nextLevel.isEmpty()) {
+            final Queue<Entry<K,V>> curLevel = new ArrayDeque<>(nextLevel);
+            nextLevel.clear();
+            level++;
+            System.out.print("Level " + level + ":");
+            for (final Entry<K, V> node : curLevel) {
+                System.out.print("\t" + node.value);
+                if (node.left != null ) {
+                    nextLevel.add(node.left);
+                }
+                if (node.right != null) {
+                    nextLevel.add(node.right);
+                }
+            }
+            System.out.print("\n");
+        }
+    }
+
+    /**
+     * Breadth-first traversal (level by level). Recursive implementation
+     *
+     * @param start traverse BST starting at node {@start}
+     * @param <K>
+     * @param <V>
+     */
+    static <K, V> void traverseByLevelsRecursive(Entry<K, V> start) {
+        if (start == null) {
+            return;
+        }
+        traverseByLevelsRecursiveHelper(Arrays.asList(start), 0);
+    }
+
+    // a helper function for {@link #traverseByLevelsRecursive(Entry)}
+    static <K, V> void traverseByLevelsRecursiveHelper(final List<Entry<K, V>> nodes, final int level) {
+        final List<Entry<K,V>> nextLevel = new ArrayList<>();
+        System.out.print("Level " + level + ":");
+        for (Entry<K, V> node : nodes) {
+            System.out.print("\t" + node.value);
+            if (node.left != null ) {
+                nextLevel.add(node.left);
+            }
+            if (node.right != null) {
+                nextLevel.add(node.right);
+            }
+        }
+        System.out.print("\n");
+
+        // recurse deeper only when we have more nodes to visit
+        if (nextLevel.size() > 0) {
+            traverseByLevelsRecursiveHelper(nextLevel, level + 1);
+        }
+    }
+
 
     public static void main(String[] args) {
 //        testTreeFromTheBook();
@@ -465,6 +536,8 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         System.out.println(keyOf(predecessor(x)));
         x = tree.getRoot();
         System.out.println(keyOf(predecessor(x)));
+        traverseByLevelsIterative(tree.getRoot());
+        traverseByLevelsRecursive(tree.getRoot());
     }
 
     static void testInsertion() {
