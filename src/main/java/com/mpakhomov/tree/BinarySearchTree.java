@@ -303,6 +303,38 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     }
 
 
+    /**
+     * Validate if a binary tree is a valid BST.
+     * Version 1: correct, but inefficient
+     *
+     * @param root root of the tree
+     * @return
+     */
+    public static <K extends Comparable<K>, V> boolean isBst1(BstEntry<K, V> root) {
+        if (root == null) {
+            return true;
+        }
+
+        if (root.left != null) {
+            // verify that root is greater than any element in its left subtree
+            K k = treeMaximum(root.left).key;
+            if (root.key.compareTo(k) < 0) {
+                return false;
+            }
+        }
+
+        if (root.right != null) {
+            // verify that root is smaller than any element in its right subtree
+            K k = treeMinimum(root.right).key;
+            if (root.key.compareTo(k) > 0) {
+                return false;
+            }
+        }
+
+        // now recursively verify that left and right subtrees are correct
+        return isBst1(root.left) && isBst1(root.right);
+    }
+
     // utility methods to avoid NPE when p is null
     static <K,V> BstEntry<K,V> parentOf(BstEntry<K,V> p) {
         return (p == null ? null: p.parent);
