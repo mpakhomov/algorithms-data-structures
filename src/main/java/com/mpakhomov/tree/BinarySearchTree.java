@@ -1,16 +1,13 @@
 package com.mpakhomov.tree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Based on Introduction to Algorithms, third edition
  * By Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein
  *
  * @param <T> the type of keys maintained by this tree
- *            created: 7/12/15
+ * @since: 7/12/15
  * @author: mpakhomov
  */
 public class BinarySearchTree<T extends Comparable<T>> {
@@ -382,7 +379,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     /**
-     * In-order traversal
+     * In-order traversal, recursive version
      * @param root start traversal at node {@code root}
      * @return a list of visited keys
      */
@@ -399,6 +396,29 @@ public class BinarySearchTree<T extends Comparable<T>> {
         traverseInOrderRecursiveHelper(node.left, nodes);
         nodes.add(node.key);
         traverseInOrderRecursiveHelper(node.right, nodes);
+        return nodes;
+    }
+
+    /**
+     * In-order traversal, iterative version
+     * @param root start traversal at node {@code root}
+     * @return a list of visited keys
+     */
+    public static  <T extends Comparable<T>> List<T> traverseInOrderIterative(BstNode<T> root) {
+        final List<T> nodes = new ArrayList<>();
+        final Deque<BstNode<T>> stack = new ArrayDeque<>();
+
+        BstNode<T> cur = root;
+        while (!stack.isEmpty() || cur != null) {
+            if (cur != null) {
+                stack.push(cur);
+                cur = cur.left;
+            } else {
+                cur = stack.pop();
+                nodes.add(cur.key);
+                cur = cur.right;
+            }
+        }
         return nodes;
     }
 

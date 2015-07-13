@@ -182,12 +182,19 @@ public class BinarySearchTreeTest {
     }
 
     @Test
-    public void testInOrder() {
+    public void testInOrderRecursive() {
         List<Integer> nodes = BinarySearchTree.traverseInOrderRecursive(correctBst.getRoot());
         assertThat(nodes, contains(1, 3, 4, 6, 7, 8, 9, 10, 13, 14));
         assertThat(Sequence.isSorted(nodes), is(equalTo(true)));
         assertThat(Sequence.isSorted(nodes.toArray(new Integer[]{})), is(equalTo(true)));
         assertThat(Sequence.isSorted(nodes.listIterator()), is(equalTo(true)));
+    }
+
+    @Test
+    public void testInOrderIterative() {
+        List<Integer> nodes = BinarySearchTree.traverseInOrderIterative(correctBst.getRoot());
+        assertThat(nodes, contains(1, 3, 4, 6, 7, 8, 9, 10, 13, 14));
+        assertThat(Sequence.isSorted(nodes), is(equalTo(true)));
     }
 
 
