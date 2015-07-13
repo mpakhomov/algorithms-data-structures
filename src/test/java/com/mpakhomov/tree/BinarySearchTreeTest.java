@@ -1,7 +1,10 @@
 package com.mpakhomov.tree;
 
+import com.mpakhomov.seq.Sequence;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertFalse;
@@ -78,9 +81,21 @@ public class BinarySearchTreeTest {
     }
 
 /**
+ * incorrectBst2
 
+         20
+        / \
+       /   \
+      /     \
+     /       \
+    10       30
+      \       \
+       70      \
+               40
+              / \
+             6  50
 
-*/
+ */
     BinarySearchTree<Integer> incorrectBst2;
     private void buildIncorrectBst2() {
         incorrectBst2 = new BinarySearchTree();
@@ -94,6 +109,12 @@ public class BinarySearchTreeTest {
         BstNode<Integer> n6 = new BstNode<>(6);
         n40.left = n6;
         n6.parent = n40;
+
+        // add 70 as a right child of 10
+        BstNode<Integer> n10 = incorrectBst2.search(10);
+        BstNode<Integer> n70 = new BstNode<>(70);
+        n10.right = n70;
+        n70.parent = n10;
     }
 
 
@@ -125,10 +146,50 @@ public class BinarySearchTreeTest {
     }
 
     @Test
-    public void validateBst() {
-        boolean isValid = BinarySearchTree.isBst1(correctBst.getRoot());
+    public void validateBst1() {
+        boolean isValid = BinarySearchTree.isValidBst1(correctBst.getRoot());
         assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst1(incorrectBst1.getRoot());
+        assertThat(isValid, is(equalTo(false)));
+
+        isValid = BinarySearchTree.isValidBst1(incorrectBst2.getRoot());
+        assertThat(isValid, is(equalTo(false)));
     }
+
+    @Test
+    public void validateBst2() {
+        boolean isValid = BinarySearchTree.isValidBst2(correctBst.getRoot());
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst2(incorrectBst1.getRoot());
+        assertThat(isValid, is(equalTo(false)));
+
+        isValid = BinarySearchTree.isValidBst2(incorrectBst2.getRoot());
+        assertThat(isValid, is(equalTo(false)));
+    }
+
+    @Test
+    public void validateBst3() {
+        boolean isValid = BinarySearchTree.isValidBst3(correctBst.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst3(incorrectBst1.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        assertThat(isValid, is(equalTo(false)));
+
+        isValid = BinarySearchTree.isValidBst3(incorrectBst2.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        assertThat(isValid, is(equalTo(false)));
+    }
+
+    @Test
+    public void testInOrder() {
+        List<Integer> nodes = BinarySearchTree.traverseInOrderRecursive(correctBst.getRoot());
+        assertThat(nodes, contains(1, 3, 4, 6, 7, 8, 9, 10, 13, 14));
+        assertThat(Sequence.isSorted(nodes), is(equalTo(true)));
+        assertThat(Sequence.isSorted(nodes.toArray(new Integer[]{})), is(equalTo(true)));
+        assertThat(Sequence.isSorted(nodes.listIterator()), is(equalTo(true)));
+    }
+
 
 //    @Test
 //    public void testAddWithFind() {
@@ -159,18 +220,7 @@ public class BinarySearchTreeTest {
 //        BinarySearchTreeDeprecated.TraverseInOrder(correctBst.getRoot());
 //    }
 //
-//    @Test
-//    public void testInOrder() {
-//        BinarySearchTreeDeprecated bst = new BinarySearchTreeDeprecated();
-//        bst.add(40);
-//        bst.add(78);
-//        bst.add(25);
-//        bst.add(10);
-//        bst.add(32);
-//        List<Integer> nodes = BinarySearchTreeDeprecated.TraverseInOrder(bst.getRoot());
-//        assertThat(nodes, contains(10, 25, 32, 40, 78));
-//    }
-//
+
 //    @Test
 //    public void testPreOrder() {
 //        BinarySearchTreeDeprecated bst = new BinarySearchTreeDeprecated();

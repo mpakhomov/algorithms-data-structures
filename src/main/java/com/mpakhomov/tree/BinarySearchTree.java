@@ -9,10 +9,9 @@ import java.util.Objects;
  * Based on Introduction to Algorithms, third edition
  * By Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein
  *
- * @author: mpakhomov
  * @param <T> the type of keys maintained by this tree
- * created: 7/12/15
- *
+ *            created: 7/12/15
+ * @author: mpakhomov
  */
 public class BinarySearchTree<T extends Comparable<T>> {
 
@@ -41,13 +40,11 @@ public class BinarySearchTree<T extends Comparable<T>> {
      * Insert a key to BST. Runs in O(logN) time
      *
      * @param key key to insert in the tree
-     *
      */
     public void insert(T key) {
         BstNode<T> rbtEntry = new BstNode<T>(key);
         insert(rbtEntry);
     }
-
 
 
     /**
@@ -93,8 +90,8 @@ public class BinarySearchTree<T extends Comparable<T>> {
 
 
     /**
-     *  Search for an element in the BST.
-     *  Runs in O(log(h)) time, where h is the size of the tree
+     * Search for an element in the BST.
+     * Runs in O(log(h)) time, where h is the size of the tree
      *
      * @param key key to find ine the tree
      * @return tree node if found, null otherwise
@@ -124,7 +121,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     void transplant(BstNode<T> u, BstNode<T> v) {
         if (u == root) {
             root = v;
-        } else if (u == u.parent.left){
+        } else if (u == u.parent.left) {
             // u is a left child
             u.parent.left = v;
         } else {
@@ -138,7 +135,8 @@ public class BinarySearchTree<T extends Comparable<T>> {
 
     /**
      * Find the successor for the given node {@code x}
-     * @param x tree entry we search the successor for
+     *
+     * @param x   tree entry we search the successor for
      * @param <T> the type of keys maintained by this tree
      * @return returns the successor of the specified entry, or null if no such
      */
@@ -164,7 +162,8 @@ public class BinarySearchTree<T extends Comparable<T>> {
 
     /**
      * Find the predecessor for the given node {@code x}
-     * @param x tree entry we search the predecessor for
+     *
+     * @param x   tree entry we search the predecessor for
      * @param <T> the type of keys maintained by this tree
      * @return returns the predecessor of the specified entry, or null if no such
      */
@@ -192,13 +191,13 @@ public class BinarySearchTree<T extends Comparable<T>> {
      * Find a minimum element in the subtree rooted at the given node {@code x}
      * We assume that x is not null
      *
-     * @param x node to start from
+     * @param x   node to start from
      * @param <T> the type of keys maintained by this tree
      * @return
      */
     static <T extends Comparable<T>> BstNode<T> treeMinimum(BstNode<T> x) {
         Objects.requireNonNull(x);
-        while (x.left != null ) {
+        while (x.left != null) {
             x = x.left;
         }
         return x;
@@ -208,13 +207,13 @@ public class BinarySearchTree<T extends Comparable<T>> {
      * Find a maximum element in the subtree rooted at the given node {@code x}
      * We assume that x is not null
      *
-     * @param x node to start from
+     * @param x   node to start from
      * @param <T> the type of keys maintained by this tree
      * @return
      */
     static <T extends Comparable<T>> BstNode<T> treeMaximum(BstNode<T> x) {
         Objects.requireNonNull(x);
-        while (x.right != null ) {
+        while (x.right != null) {
             x = x.right;
         }
         return x;
@@ -242,7 +241,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
             System.out.print("Level " + level + ":");
             for (final BstNode<T> node : curLevel) {
                 System.out.print("\t" + node.key);
-                if (node.left != null ) {
+                if (node.left != null) {
                     nextLevel.add(node.left);
                 }
                 if (node.right != null) {
@@ -257,7 +256,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
      * Breadth-first traversal (level by level). Recursive implementation
      *
      * @param start traverse BST starting at node {@start}
-     * @param <T> the type of keys maintained by this tree
+     * @param <T>   the type of keys maintained by this tree
      */
     static <T extends Comparable<T>> void traverseByLevelsRecursive(BstNode<T> start) {
         if (start == null) {
@@ -272,7 +271,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
         System.out.print("Level " + level + ":");
         for (BstNode<T> node : nodes) {
             System.out.print("\t" + node.key);
-            if (node.left != null ) {
+            if (node.left != null) {
                 nextLevel.add(node.left);
             }
             if (node.right != null) {
@@ -289,13 +288,13 @@ public class BinarySearchTree<T extends Comparable<T>> {
 
 
     /**
-     * Validate if a binary tree is a valid BST.
-     * Version 1: correct, but inefficient
+     * Validate if the given binary tree is a valid BST.
+     * Version 1: correct, but inefficient. Runs in O(N2)
      *
      * @param root root of the tree
-     * @return
+     * @return true if the tree is a valid BST, returns false otherwise
      */
-    public static <T extends Comparable<T>> boolean isBst1(BstNode<T> root) {
+    public static <T extends Comparable<T>> boolean isValidBst1(BstNode<T> root) {
         if (root == null) {
             return true;
         }
@@ -317,20 +316,105 @@ public class BinarySearchTree<T extends Comparable<T>> {
         }
 
         // now recursively verify that left and right subtrees are valid BST
-        return isBst1(root.left) && isBst1(root.right);
+        return isValidBst1(root.left) && isValidBst1(root.right);
     }
+
+    /**
+     * Validate if the given binary tree is a valid BST.
+     * Version 2: correct???. It's an efficient algorithm. It uses in-order traversal
+     * and visits each node only once. Runs in O(N)
+     *
+     * @param root root of the tree
+     * @return true if the tree is a valid BST, returns false otherwise
+     */
+    public static <T extends Comparable<T>> boolean isValidBst2(BstNode<T> root) {
+        return isValidBst2Helper(root, null);
+    }
+
+    public static <T extends Comparable<T>> boolean isValidBst2Helper(BstNode<T> node, BstNode<T> prev) {
+        if (node == null)
+            return true;
+
+        if (!isValidBst2Helper(node.left, prev))
+            return false;
+
+        if (prev != null) {
+            if (node.key.compareTo(prev.key) < 0) {
+                return false;
+            }
+        }
+
+        if (!isValidBst2Helper(node.right, node)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Validate if the given binary tree is a valid BST.
+     * Version 3: correct. It's an efficient algorithm. It uses in-order traversal
+     * and visits each node only once. Runs in O(N)
+     * One drawback of this algorithm is that it requires to specify MIN_VALUE, MAX_VALUE for
+     * type T. It's not possible to write truly generic implementation of this algorithm in Java,
+     * because it's impossible to find out what is the MIN_VALUE and MAX_VALUE of generic type T
+     *
+     * @param root     root of the tree
+     * @param minValue min value of type {@code T}. Examples: for integer it's {@link java.lang.Integer#MIN_VALUE}
+     * @param maxValue max value of type {@code T}. Examples: for integer it's {@link java.lang.Integer#MAX_VALUE}
+     * @return true if the tree is a valid BST, returns false otherwise
+     */
+    public static <T extends Comparable<T>> boolean isValidBst3(BstNode<T> root, final T minValue, final T maxValue) {
+        return isValidBst3Helper(root, minValue, maxValue);
+    }
+
+    private static <T extends Comparable<T>> boolean isValidBst3Helper(BstNode<T> node, T min, T max) {
+        if (node == null) {
+            return true;
+        }
+
+        // node.key should be in range (min, max)
+        if (node.key.compareTo(min) < 0 || node.key.compareTo(max) > 0) {
+            return false;
+        }
+
+        // left should be in range (min, node.key), right right should be in range (node.key, max)
+        return isValidBst3Helper(node.left, min, node.key) && isValidBst3Helper(node.right, node.key, max);
+    }
+
+    /**
+     * In-order traversal
+     * @param root start traversal at node {@code root}
+     * @return a list of visited keys
+     */
+    public static  <T extends Comparable<T>> List<T> traverseInOrderRecursive(BstNode<T> root) {
+        final List<T> nodes = new ArrayList<>();
+        return traverseInOrderRecursiveHelper(root, nodes);
+    }
+
+    private static  <T extends Comparable<T>> List<T> traverseInOrderRecursiveHelper(BstNode<T> node,
+                                                                               List<T> nodes) {
+        if (node == null) {
+            return nodes;
+        }
+        traverseInOrderRecursiveHelper(node.left, nodes);
+        nodes.add(node.key);
+        traverseInOrderRecursiveHelper(node.right, nodes);
+        return nodes;
+    }
+
+
 
     // utility methods to avoid NPE when p is null
     static <T extends Comparable<T>> BstNode<T> parentOf(BstNode<T> p) {
-        return (p == null ? null: p.parent);
+        return (p == null ? null : p.parent);
     }
 
-    static<T extends Comparable<T>> BstNode<T> leftOf(BstNode<T> p) {
-        return (p == null) ? null: p.left;
+    static <T extends Comparable<T>> BstNode<T> leftOf(BstNode<T> p) {
+        return (p == null) ? null : p.left;
     }
 
     static <T extends Comparable<T>> BstNode<T> rightOf(BstNode<T> p) {
-        return (p == null) ? null: p.right;
+        return (p == null) ? null : p.right;
     }
 
     static <T extends Comparable<T>> T keyOf(BstNode<T> p) {

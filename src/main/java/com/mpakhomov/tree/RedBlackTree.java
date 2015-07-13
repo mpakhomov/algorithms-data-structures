@@ -14,14 +14,12 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
     public final static boolean BLACK = true;
     public final static boolean RED = false;
 
-
     // TODO:
     // Implement iterative in-order tree walk (traversion).
     // Hint: An easy solution uses a stack as an auxiliary data structure.
     // A more complicated, but elegant, solution uses no stack but assumes that we can test two pointers for equality
     // TODO:
     // Implement: breadth-first (level-order) tree traversal
-
 
     /**
      * Insert an entry to Red Black Tree. Runs in O(logN) time
@@ -35,18 +33,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         rbInsertFixUp(rbtEntry);
     }
 
-    // utility methods to avoid NPE when p is null. Also, they cast {@link BstEntry} to {@code RbtEntry},
-    // so that I don't have to write boilerplate code in the algorithms implementation. I want to keep
-    // RBT algorithms implementation as clean as it's possible
-    static <T extends Comparable<T>> boolean colorOf(BstNode<T> p) {
-        return (p == null) ? BLACK: ((RbtNode)p).color;
-    }
-
-    static <T extends Comparable<T>> void setColor(BstNode<T> p, boolean c) {
-        if (p != null) {
-            ((RbtNode)p).color = c;
-        }
-    }
 
 
 
@@ -283,7 +269,18 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         System.out.print(node.key + ", ");
         printInOrder(node.right);
     }
-    
-    
+
+    // utility methods to avoid NPE when p is null. Also, they cast {@link BstEntry} to {@code RbtEntry},
+    // so that I don't have to write boilerplate code in the algorithms implementation. I want to keep
+    // RBT algorithms implementation as clean as it's possible
+    static <T extends Comparable<T>> boolean colorOf(BstNode<T> p) {
+        return (p == null) ? BLACK: ((RbtNode)p).color;
+    }
+
+    static <T extends Comparable<T>> void setColor(BstNode<T> p, boolean c) {
+        if (p != null) {
+            ((RbtNode)p).color = c;
+        }
+    }
 
 }
