@@ -34,19 +34,19 @@ public class BinarySearchTreeTest {
    4  7    13
 
  */
-    BinarySearchTree<Integer, Integer> correctBst;
+    BinarySearchTree<Integer> correctBst;
     private void buildCorrectBst() {
         correctBst = new BinarySearchTree<>();
-        correctBst.insert(new BinarySearchTree.BstEntry<>(8, 8));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(3, 3));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(10, 10));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(1, 1));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(6, 6));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(4, 4));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(7, 7));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(14, 14));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(13, 13));
-        correctBst.insert(new BinarySearchTree.BstEntry<>(9, 9));
+        correctBst.insert(8);
+        correctBst.insert(3);
+        correctBst.insert(10);
+        correctBst.insert(1);
+        correctBst.insert(6);
+        correctBst.insert(4);
+        correctBst.insert(7);
+        correctBst.insert(14);
+        correctBst.insert(13);
+        correctBst.insert(9);
     }
 
 
@@ -60,17 +60,17 @@ public class BinarySearchTreeTest {
       \
       20
 */
-    BinarySearchTree<Integer, Integer> incorrectBst1;
+    BinarySearchTree<Integer> incorrectBst1;
     private void buildIncorrectBst() {
         incorrectBst1 = new BinarySearchTree();
-        incorrectBst1.insert(new BinarySearchTree.BstEntry<>(10, 10));
-        incorrectBst1.insert(new BinarySearchTree.BstEntry<>(5, 5));
-        incorrectBst1.insert(new BinarySearchTree.BstEntry<>(15, 15));
-        incorrectBst1.insert(new BinarySearchTree.BstEntry<>(20, 20));
+        incorrectBst1.insert(10);
+        incorrectBst1.insert(5);
+        incorrectBst1.insert(15);
+        incorrectBst1.insert(20);
         // replace 15 with 6 to make the tree incorrect BST
-        BinarySearchTree.BstEntry<Integer, Integer> root = incorrectBst1.getRoot();
-        BinarySearchTree.BstEntry<Integer, Integer> n6 = new BinarySearchTree.BstEntry<>(6, 6);
-        BinarySearchTree.BstEntry<Integer, Integer> n20 = root.right.right;
+        BstNode<Integer> root = incorrectBst1.getRoot();
+        BstNode<Integer> n6 = new BstNode<>(6);
+        BstNode<Integer> n20 = root.right.right;
         root.right = n6;
         n6.right = n20;
         n6.parent = root;
@@ -81,17 +81,17 @@ public class BinarySearchTreeTest {
 
 
 */
-    BinarySearchTree<Integer, Integer> incorrectBst2;
+    BinarySearchTree<Integer> incorrectBst2;
     private void buildIncorrectBst2() {
         incorrectBst2 = new BinarySearchTree();
-        incorrectBst2.insert(new BinarySearchTree.BstEntry<>(20, 20));
-        incorrectBst2.insert(new BinarySearchTree.BstEntry<>(10, 10));
-        incorrectBst2.insert(new BinarySearchTree.BstEntry<>(30, 30));
-        incorrectBst2.insert(new BinarySearchTree.BstEntry<>(40, 40));
-        incorrectBst2.insert(new BinarySearchTree.BstEntry<>(50, 50));
+        incorrectBst2.insert(20);
+        incorrectBst2.insert(10);
+        incorrectBst2.insert(30);
+        incorrectBst2.insert(40);
+        incorrectBst2.insert(50);
         // add 6 as a left child of 40
-        BinarySearchTree.BstEntry<Integer, Integer> n40 = incorrectBst2.search(40);
-        BinarySearchTree.BstEntry<Integer, Integer> n6 = new BinarySearchTree.BstEntry<>(6, 6);
+        BstNode<Integer> n40 = incorrectBst2.search(40);
+        BstNode<Integer> n6 = new BstNode<>(6);
         n40.left = n6;
         n6.parent = n40;
     }
@@ -112,15 +112,15 @@ public class BinarySearchTreeTest {
     @Test
     public void testSuccessfulSearch13() {
         // test that 13 is found
-        BinarySearchTree.BstEntry<Integer, Integer> node = correctBst.search(13);
+        BstNode<Integer> node = correctBst.search(13);
         assertThat(node, is(notNullValue()));
-        assertThat(node.value, is(equalTo(13)));
+        assertThat(node.key, is(equalTo(13)));
     }
 
     @Test
     public void testUnsuccessfulSearch12() {
         // test that 12 is not found
-        BinarySearchTree.BstEntry<Integer, Integer> node = correctBst.search(12);
+        BstNode<Integer> node = correctBst.search(12);
         assertThat(node, is(nullValue()));
     }
 

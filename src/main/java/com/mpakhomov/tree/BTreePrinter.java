@@ -7,13 +7,13 @@ import java.util.*;
  */
 class BTreePrinter  {
 
-    public static <K extends Comparable<K>, V> void printNode(BinarySearchTree.BstEntry<K, V> root) {
+    public static <T extends Comparable<T>> void printNode(BstNode<T> root) {
         int maxLevel = BTreePrinter.maxLevel(root);
 
         printNodeInternal(Collections.singletonList(root), 1, maxLevel);
     }
 
-    private static <K extends Comparable<K>, V> void printNodeInternal(List<BinarySearchTree.BstEntry<K, V>> nodes, int level, int maxLevel) {
+    private static <T extends Comparable<T>> void printNodeInternal(List<BstNode<T>> nodes, int level, int maxLevel) {
         if (nodes.isEmpty() || BTreePrinter.isAllElementsNull(nodes))
             return;
 
@@ -24,11 +24,11 @@ class BTreePrinter  {
 
         BTreePrinter.printWhitespaces(firstSpaces);
 
-        List<BinarySearchTree.BstEntry<K, V>> newNodes = new ArrayList<>();
-        for (BinarySearchTree.BstEntry<K, V> node : nodes) {
+        List<BstNode<T>> newNodes = new ArrayList<>();
+        for (BstNode<T> node : nodes) {
             if (node != null) {
-                System.out.print(node.value);
-//                System.out.print(node.getValueAsString());
+                System.out.print(node.key);
+//                System.out.print(node.getKeyAsString());
                 newNodes.add(node.left);
                 newNodes.add(node.right);
             } else {
@@ -75,14 +75,14 @@ class BTreePrinter  {
             System.out.print(" ");
     }
 
-    private static <K extends Comparable<K>, V> int maxLevel(BinarySearchTree.BstEntry<K, V> node) {
+    private static <T extends Comparable<T>> int maxLevel(BstNode<T> node) {
         if (node == null)
             return 0;
 
         return Math.max(BTreePrinter.maxLevel(node.left), BTreePrinter.maxLevel(node.right)) + 1;
     }
 
-    private static <K extends Comparable<K>, V> boolean isAllElementsNull(List<BinarySearchTree.BstEntry<K, V>> nodes) {
+    private static <T extends Comparable<T>> boolean isAllElementsNull(List<BstNode<T>> nodes) {
         for (Object object : nodes) {
             if (object != null)
                 return false;
@@ -102,7 +102,7 @@ class BTreePrinter  {
 //        tree.put(7, 7);
 //        tree.put(8, 8);
         for (int i = 1; i <= 16; i++) {
-            tree.put(i, i);
+            tree.put(i);
         }
 
         BTreePrinter.printNode(tree.getRoot());

@@ -1,49 +1,23 @@
 package com.mpakhomov.tree;
 
-import com.sun.org.apache.xpath.internal.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Based on Introduction to Algorithms, third edition
  * By Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein
  *
  * @author: mpakhomov
+ * @param <T> the type of keys maintained by this tree
  * created: 7/12/15
+ *
  */
-public class BinarySearchTree<K extends Comparable<K>, V> {
+public class BinarySearchTree<T extends Comparable<T>> {
 
     protected int size;
-    protected BstEntry<K, V> root;
-
-    // Binary Search Tree Entry
-    public static class BstEntry<K, V> {
-        protected K key;
-        protected V value;
-        protected BstEntry<K, V> left;
-        protected BstEntry<K, V> right;
-        protected BstEntry<K, V> parent;
-
-        public BstEntry(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        public BstEntry(K key, V value, BstEntry<K, V> parent) {
-            this(key, value);
-            this.parent = parent;
-        }
-
-        /**
-         * To be overridden in subclasses. For example, in Red Black Tree we might want
-         * to print value as {@code "<value>:<COLOR>"}
-         *
-         * @return string representation of the value
-         */
-        protected String getValueAsString() {
-            return value.toString();
-        }
-    }
+    protected BstNode<T> root;
 
     /**
      * get size of the tree
@@ -59,33 +33,46 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      *
      * @return root of the tree
      */
-    public BstEntry<K, V> getRoot() {
+    public BstNode<T> getRoot() {
         return root;
     }
 
     /**
-     * Insert an entry to Binary Search Tree (BST).
+     * Insert a key to BST. Runs in O(logN) time
+     *
+     * @param key key to insert in the tree
+     *
+     */
+    public void insert(T key) {
+        BstNode<T> rbtEntry = new BstNode<T>(key);
+        insert(rbtEntry);
+    }
+
+
+
+    /**
+     * Insert an node to Binary Search Tree (BST).
      * Runs in O(log(h)) time, where h is the height of the tree
      *
-     * @param entry entry to be inserted in the tree
+     * @param node node to be inserted in the tree
      */
-    void insert(BstEntry<K, V> entry) {
+    void insert(BstNode<T> node) {
         if (root == null) {
-            root = entry;
+            root = node;
             size++;
             return;
         }
 
-        BstEntry<K, V> curr = root;
+        BstNode<T> curr = root;
         while (true) {
-            if (curr.key.compareTo(entry.key) < 0) {
+            if (curr.key.compareTo(node.key) < 0) {
                 // search in the right subtree
                 if (curr.right != null) {
                     curr = curr.right;
                 } else {
                     // found
-                    curr.right = entry;
-                    entry.parent = curr;
+                    curr.right = node;
+                    node.parent = curr;
                     size++;
                     break;
                 }
@@ -95,8 +82,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
                     curr = curr.left;
                 } else {
                     // found
-                    curr.left = entry;
-                    entry.parent = curr;
+                    curr.left = node;
+                    node.parent = curr;
                     size++;
                     break;
                 }
@@ -112,8 +99,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * @param key key to find ine the tree
      * @return tree node if found, null otherwise
      */
-    public BstEntry<K, V> search(K key) {
-        BstEntry<K, V> x = root;
+    public BstNode<T> search(T key) {
+        BstNode<T> x = root;
         while (x != null && key.compareTo(x.key) != 0) {
             if (key.compareTo(x.key) < 0) {
                 // search in the left subtree
@@ -134,7 +121,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * @param u subtree which is to be replaced
      * @param v a replacement for subtree u
      */
-    void transplant(BstEntry<K, V> u, BstEntry<K, V> v) {
+    void transplant(BstNode<T> u, BstNode<T> v) {
         if (u == root) {
             root = v;
         } else if (u == u.parent.left){
@@ -152,11 +139,10 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     /**
      * Find the successor for the given node {@code x}
      * @param x tree entry we search the successor for
-     * @param <K>
-     * @param <V>
+     * @param <T> the type of keys maintained by this tree
      * @return returns the successor of the specified entry, or null if no such
      */
-    static <K, V> BstEntry<K, V> successor(BstEntry<K, V> x) {
+    static <T extends Comparable<T>> BstNode<T> successor(BstNode<T> x) {
         if (x == null) {
             return null;
         }
@@ -168,7 +154,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
 
         // otherwise go up the tree until find x's ancestor which is a left child of its parent
         // in other words: go up the tree until we make a right turn
-        BstEntry<K, V> y = x.parent;
+        BstNode<T> y = x.parent;
         while (y != null && x == y.right) {
             x = y;
             y = y.parent;
@@ -179,11 +165,10 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     /**
      * Find the predecessor for the given node {@code x}
      * @param x tree entry we search the predecessor for
-     * @param <K>
-     * @param <V>
+     * @param <T> the type of keys maintained by this tree
      * @return returns the predecessor of the specified entry, or null if no such
      */
-    static <K, V> BstEntry<K, V> predecessor(BstEntry<K, V> x) {
+    static <T extends Comparable<T>> BstNode<T> predecessor(BstNode<T> x) {
         if (x == null) {
             return null;
         }
@@ -195,7 +180,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
 
         // otherwise go up the tree until find x's ancestor which is a right child of its parent
         // in other words: go up the tree until we make a left turn
-        BstEntry<K, V> y = x.parent;
+        BstNode<T> y = x.parent;
         while (y != null && x == y.left) {
             x = y;
             y = y.parent;
@@ -207,10 +192,11 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * Find a minimum element in the subtree rooted at the given node {@code x}
      * We assume that x is not null
      *
-     * @param x
+     * @param x node to start from
+     * @param <T> the type of keys maintained by this tree
      * @return
      */
-    static <K, V> BstEntry<K, V> treeMinimum(BstEntry<K, V> x) {
+    static <T extends Comparable<T>> BstNode<T> treeMinimum(BstNode<T> x) {
         Objects.requireNonNull(x);
         while (x.left != null ) {
             x = x.left;
@@ -222,10 +208,11 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * Find a maximum element in the subtree rooted at the given node {@code x}
      * We assume that x is not null
      *
-     * @param x
+     * @param x node to start from
+     * @param <T> the type of keys maintained by this tree
      * @return
      */
-    static <K, V> BstEntry<K, V> treeMaximum(BstEntry<K, V> x) {
+    static <T extends Comparable<T>> BstNode<T> treeMaximum(BstNode<T> x) {
         Objects.requireNonNull(x);
         while (x.right != null ) {
             x = x.right;
@@ -237,25 +224,24 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * Breadth-first traversal (level by level). Iterative implementation
      *
      * @param start traverse BST starting at node {@start}
-     * @param <K>
-     * @param <V>
+     * @param <T>
      */
-    static <K, V> void traverseByLevelsIterative(BstEntry<K, V> start) {
+    static <T extends Comparable<T>> void traverseByLevelsIterative(BstNode<T> start) {
         if (start == null) {
             return;
         }
 
         int level = 0;
-        Queue<BstEntry<K, V>> nextLevel = new ArrayDeque<>();
+        List<BstNode<T>> nextLevel = new ArrayList<>();
         nextLevel.add(start);
 
         while (!nextLevel.isEmpty()) {
-            final Queue<BstEntry<K,V>> curLevel = new ArrayDeque<>(nextLevel);
+            final List<BstNode<T>> curLevel = new ArrayList<>(nextLevel);
             nextLevel.clear();
             level++;
             System.out.print("Level " + level + ":");
-            for (final BstEntry<K, V> node : curLevel) {
-                System.out.print("\t" + node.value);
+            for (final BstNode<T> node : curLevel) {
+                System.out.print("\t" + node.key);
                 if (node.left != null ) {
                     nextLevel.add(node.left);
                 }
@@ -271,10 +257,9 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * Breadth-first traversal (level by level). Recursive implementation
      *
      * @param start traverse BST starting at node {@start}
-     * @param <K>
-     * @param <V>
+     * @param <T> the type of keys maintained by this tree
      */
-    static <K, V> void traverseByLevelsRecursive(BstEntry<K, V> start) {
+    static <T extends Comparable<T>> void traverseByLevelsRecursive(BstNode<T> start) {
         if (start == null) {
             return;
         }
@@ -282,11 +267,11 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
     }
 
     // a helper function for {@link #traverseByLevelsRecursive(Entry)}
-    static <K, V> void traverseByLevelsRecursiveHelper(final List<BstEntry<K, V>> nodes, final int level) {
-        final List<BstEntry<K,V>> nextLevel = new ArrayList<>();
+    static <T extends Comparable<T>> void traverseByLevelsRecursiveHelper(final List<BstNode<T>> nodes, final int level) {
+        final List<BstNode<T>> nextLevel = new ArrayList<>();
         System.out.print("Level " + level + ":");
-        for (BstEntry<K, V> node : nodes) {
-            System.out.print("\t" + node.value);
+        for (BstNode<T> node : nodes) {
+            System.out.print("\t" + node.key);
             if (node.left != null ) {
                 nextLevel.add(node.left);
             }
@@ -310,45 +295,46 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
      * @param root root of the tree
      * @return
      */
-    public static <K extends Comparable<K>, V> boolean isBst1(BstEntry<K, V> root) {
+    public static <T extends Comparable<T>> boolean isBst1(BstNode<T> root) {
         if (root == null) {
             return true;
         }
 
         if (root.left != null) {
             // verify that root is greater than any element in its left subtree
-            K k = treeMaximum(root.left).key;
-            if (root.key.compareTo(k) < 0) {
+            T key = treeMaximum(root.left).key;
+            if (root.key.compareTo(key) < 0) {
                 return false;
             }
         }
 
         if (root.right != null) {
             // verify that root is smaller than any element in its right subtree
-            K k = treeMinimum(root.right).key;
-            if (root.key.compareTo(k) > 0) {
+            T key = treeMinimum(root.right).key;
+            if (root.key.compareTo(key) > 0) {
                 return false;
             }
         }
 
-        // now recursively verify that left and right subtrees are correct
+        // now recursively verify that left and right subtrees are valid BST
         return isBst1(root.left) && isBst1(root.right);
     }
 
     // utility methods to avoid NPE when p is null
-    static <K,V> BstEntry<K,V> parentOf(BstEntry<K,V> p) {
+    static <T extends Comparable<T>> BstNode<T> parentOf(BstNode<T> p) {
         return (p == null ? null: p.parent);
     }
 
-    static <K,V> BstEntry<K,V> leftOf(BstEntry<K,V> p) {
+    static<T extends Comparable<T>> BstNode<T> leftOf(BstNode<T> p) {
         return (p == null) ? null: p.left;
     }
 
-    static <K,V> BstEntry<K,V> rightOf(BstEntry<K,V> p) {
+    static <T extends Comparable<T>> BstNode<T> rightOf(BstNode<T> p) {
         return (p == null) ? null: p.right;
     }
 
-    static <K,V> K keyOf(BstEntry<K,V> p) {
+    static <T extends Comparable<T>> T keyOf(BstNode<T> p) {
         return (p == null) ? null : p.key;
     }
+
 }

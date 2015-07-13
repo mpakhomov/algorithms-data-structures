@@ -7,8 +7,9 @@ package com.mpakhomov.tree;
  *
  * @author mpakhomov
  * @since: 7/6/2015
+ * @param <T> the type of keys maintained by this tree
  */
-public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
+public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
     public final static boolean BLACK = true;
     public final static boolean RED = false;
@@ -22,31 +23,13 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
     // Implement: breadth-first (level-order) tree traversal
 
 
-    // Red Black Tree Entry
-    public static class RbtEntry<K, V> extends BstEntry {
-        private boolean color = BLACK;
-
-        public RbtEntry(K key, V value, boolean color) {
-            super(key, value);
-            this.color = color;
-        }
-
-        @Override
-        protected String getValueAsString() {
-            return value + ":" + (color == BLACK ? "B" : "R");
-        }
-    }
-
-
     /**
-     * Insert an entry into Red Black Tree. Runs in O(logN) time
+     * Insert an entry to Red Black Tree. Runs in O(logN) time
      *
-     * @param key key with which the specified value is to be associated
-     * @param value value to be associated with the specified key
-     *              *
+     * @param key key to insert in the tree
      */
-    public void put(K key, V value) {
-        RbtEntry<K, V> rbtEntry = new RbtEntry<K, V>(key, value, RED);
+    public void put(T key) {
+        RbtNode<T> rbtEntry = new RbtNode<T>(key, RED);
         // insert a node to RBT as it were an ordinary Binary Search Tree
         insert(rbtEntry);
         rbInsertFixUp(rbtEntry);
@@ -54,16 +37,17 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
 
     // utility methods to avoid NPE when p is null. Also, they cast {@link BstEntry} to {@code RbtEntry},
     // so that I don't have to write boilerplate code in the algorithms implementation. I want to keep
-    // my implementation as clean as it's possible
-    static <K,V> boolean colorOf(BstEntry<K,V> p) {
-        return (p == null) ? BLACK: ((RbtEntry)p).color;
+    // RBT algorithms implementation as clean as it's possible
+    static <T extends Comparable<T>> boolean colorOf(BstNode<T> p) {
+        return (p == null) ? BLACK: ((RbtNode)p).color;
     }
 
-    static <K,V> void setColor(BstEntry<K,V> p, boolean c) {
+    static <T extends Comparable<T>> void setColor(BstNode<T> p, boolean c) {
         if (p != null) {
-            ((RbtEntry)p).color = c;
+            ((RbtNode)p).color = c;
         }
     }
+
 
 
     /**
@@ -71,7 +55,7 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
      *
      * @param z red-black tree entry
      */
-    public void rbInsertFixUp(RbtEntry<K, V> z) {
+    public void rbInsertFixUp(RbtNode<T> z) {
         z.color = RED;
 
         // in the book there is no z != root check, because if z is root, then its parent is
@@ -82,7 +66,7 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
                 // z and its parent (p) is in the left subtree of its grandparent (g)
 
                 // y is an uncle of z (it's a right child of its grandparent)
-                BstEntry<K, V> y = rightOf(parentOf(parentOf(z)));
+                BstNode<T> y = rightOf(parentOf(parentOf(z)));
                 if (colorOf(y) == RED) {
                     // Case 1. recoloring
                     setColor(parentOf(z), BLACK);
@@ -90,11 +74,11 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
                     setColor(parentOf(parentOf(z)), RED);
                     // move z two levels up in the tree. in other words: it moves a violation of '2 red in a row'
                     // property two levels up in the tree
-                    z = (RbtEntry) parentOf(parentOf(z));
+                    z = (RbtNode) parentOf(parentOf(z));
                 } else {
                     if (z == rightOf(parentOf(z))) {
                         // Case 2: z is a right child of its parent. Transform it to case 3
-                        z = (RbtEntry) parentOf(z);
+                        z = (RbtNode) parentOf(z);
                         rotateLeft(z);
                     }
                     // Case 3: z is a left child of its parent.
@@ -108,18 +92,18 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
                 // z and its parent (p) is in the right subtree of its grandparent (g)
 
                 // y is an uncle of z (it's a left child of its grandparent)
-                BstEntry<K, V> y = leftOf(parentOf(parentOf(z)));
+                BstNode<T> y = leftOf(parentOf(parentOf(z)));
                 if (colorOf(y) == RED) {
                     // Case 1. recoloring
                     setColor(parentOf(z), BLACK);
                     setColor(y, BLACK);
                     setColor(parentOf(parentOf(z)), RED);
                     // move z two levels up in the tree
-                    z = (RbtEntry) parentOf(parentOf(z));
+                    z = (RbtNode) parentOf(parentOf(z));
                 } else {
                     if (z == leftOf(parentOf(z))) {
                         // Case 2: z is a left child of its parent. Transform it to case 3.
-                        z = (RbtEntry)parentOf(z);
+                        z = (RbtNode)parentOf(z);
                         rotateRight(z);
                     }
                     // Case 3: z is a right child of its parent
@@ -139,7 +123,7 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
     /**
      * Left rotation is used to swap a parent node x with its <em>right</em> child y, so that
      * y becomes a new parent of x and x becomes y's right child. It's an operation symmetric to
-     * {@link #rotateRight(BstEntry)}
+     * {@link #rotateRight(BstNode)}
      * Left rotation preserves BST properties, i.e modified tree is still a Binary Search Tree
      *
      *       x                       y
@@ -152,8 +136,8 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
      *
      * @param x     a tree node (parent) to run the rotation on
      */
-    void rotateLeft(BinarySearchTree.BstEntry<K, V> x) {
-        BinarySearchTree.BstEntry<K, V> y = x.right; // set y, we want to exchange x and its right child y
+    void rotateLeft(BstNode<T> x) {
+        BstNode<T> y = x.right; // set y, we want to exchange x and its right child y
         x.right = y.left; // turn y's left subtree into x's right subtree
         if (y.left != null) {
             y.left.parent = x;
@@ -173,7 +157,7 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
     /**
      * Right rotation is used to swap a parent node x with its <em>left</em> child y, so that
      * y becomes a new parent of x and x becomes y's right child. It's an operation symmmetric to
-     * {@link #rotateLeft(BinarySearchTree.BstEntry)}
+     * {@link #rotateLeft(BstNode)}
      * Right rotation preserves BST properties, i.e modified tree is still a Binary Search Tree
      *
      *        x                 y
@@ -186,8 +170,8 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
      *
      * @param x     a tree node (parent) to run the rotation on
      */
-    void rotateRight(BstEntry<K, V> x) {
-        BstEntry<K, V> y = x.left; // set y
+    void rotateRight(BstNode<T> x) {
+        BstNode<T> y = x.left; // set y
         x.left = y.right; // turn y's right subtree into x's left subtree
         if (y.right != null) {
             y.right.parent = x;
@@ -213,40 +197,31 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
     }
 
     static void testTreeFromTheBook() {
-        RbtEntry<Integer, Integer> root = new RbtEntry<>(11, 11, BLACK);
-        RbtEntry<Integer, Integer> n14 = new RbtEntry<>(14, 14, BLACK);
-        RbtEntry<Integer, Integer> n2 = new RbtEntry<>(2, 2, RED);
-        RbtEntry<Integer, Integer> n1 = new RbtEntry<>(1, 1, BLACK);
-        RbtEntry<Integer, Integer> n7 = new RbtEntry<>(7, 7, BLACK);
-        RbtEntry<Integer, Integer> n5 = new RbtEntry<>(5, 5, RED);
-        RbtEntry<Integer, Integer> n8 = new RbtEntry<>(8, 8, RED);
-        RbtEntry<Integer, Integer> n15 = new RbtEntry<>(15, 15, RED);
-
         RedBlackTree tree = new RedBlackTree();
-        tree.insert(root);
-        tree.insert(n14);
-        tree.insert(n2);
-        tree.insert(n1);
-        tree.insert(n7);
-        tree.insert(n5);
-        tree.insert(n8);
-        tree.insert(n15);
+        tree.put(11);
+        tree.put(14);
+        tree.put(2);
+        tree.put(1);
+        tree.put(7);
+        tree.put(5);
+        tree.put(8);
+        tree.put(15);
 
         System.out.println("");
-        printInOrder(root);
+        printInOrder(tree.getRoot());
     }
 
     static void testThirdInsertion() {
 
         RedBlackTree tree = new RedBlackTree();
-        tree.put(1, 1);
-        tree.put(2, 2);
-        tree.put(3, 3);
-        tree.put(4, 4);
-        tree.put(5, 5);
-        tree.put(6, 6);
-        tree.put(7, 7);
-        tree.put(8, 8);
+        tree.put(1);
+        tree.put(2);
+        tree.put(3);
+        tree.put(4);
+        tree.put(5);
+        tree.put(6);
+        tree.put(7);
+        tree.put(8);
 
         System.out.println("");
         printInOrder(tree.getRoot());
@@ -254,7 +229,7 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
         System.out.println(treeMinimum(tree.getRoot()).key);
         System.out.println(treeMaximum(tree.getRoot()).key);
         System.out.println(successor(tree.getRoot()).key);
-        BinarySearchTree.BstEntry<Integer, Integer> x = tree.search(1);
+        BstNode<Integer> x = tree.search(1);
         System.out.println(keyOf(successor(x)));
         System.out.println(keyOf(predecessor(x)));
         x = tree.getRoot();
@@ -266,15 +241,15 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
     static void testInsertion() {
 
         RedBlackTree tree = new RedBlackTree();
-        tree.put(11, 11);
-        tree.put(14, 14);
-        tree.put(2, 2);
-        tree.put(1, 1);
-        tree.put(7, 7);
-        tree.put(5, 5);
-        tree.put(8, 8);
-        tree.put(15, 15);
-        tree.put(4, 4);
+        tree.put(11);
+        tree.put(14);
+        tree.put(2);
+        tree.put(1);
+        tree.put(7);
+        tree.put(5);
+        tree.put(8);
+        tree.put(15);
+        tree.put(4);
 
         System.out.println("");
         printInOrder(tree.getRoot());
@@ -283,21 +258,21 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
     static void testAnotherInsertion() {
 
         RedBlackTree tree = new RedBlackTree();
-        tree.put(7, 7);
-        tree.put(3, 3);
-        tree.put(18, 18);
-        tree.put(10, 10);
-        tree.put(22, 22);
-        tree.put(8, 8);
-        tree.put(11, 11);
-        tree.put(26, 26);
-        tree.put(15, 15);
+        tree.put(7);
+        tree.put(3);
+        tree.put(18);
+        tree.put(10);
+        tree.put(22);
+        tree.put(88);
+        tree.put(11);
+        tree.put(26);
+        tree.put(15);
 
         System.out.println("");
         printInOrder(tree.getRoot());
     }
 
-    static private void printInOrder(BstEntry node) {
+    static private void printInOrder(BstNode node) {
         if (node == null) {
             return;
         }
@@ -305,12 +280,10 @@ public class RedBlackTree<K extends Comparable<K>, V> extends BinarySearchTree {
             return;
         }
         printInOrder(node.left);
-        System.out.print(node.value + ", ");
+        System.out.print(node.key + ", ");
         printInOrder(node.right);
     }
-
-
-
-
+    
+    
 
 }
