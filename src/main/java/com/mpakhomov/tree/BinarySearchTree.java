@@ -1,5 +1,7 @@
 package com.mpakhomov.tree;
 
+import com.mpakhomov.seq.Sequence;
+
 import java.util.*;
 
 /**
@@ -219,25 +221,26 @@ public class BinarySearchTree<T extends Comparable<T>> {
     /**
      * Breadth-first traversal (level by level). Iterative implementation
      *
-     * @param start traverse BST starting at node {@start}
-     * @param <T>
+     * @param root traverse BST starting at node {@code root}
+     * @param <T>   the type of keys maintained by this tree
+     * @return a list of list containing keys. list.get(0) returns level 0 (root),
+     *         list.get(1) returns all nodes at level 1 and so on
      */
-    static <T extends Comparable<T>> void traverseByLevelsIterative(BstNode<T> start) {
-        if (start == null) {
-            return;
+    static <T extends Comparable<T>> List<List<T>> traverseByLevelsIterative(BstNode<T> root) {
+        List<List<T>> lol = new ArrayList<>();
+        if (root == null) {
+            return lol;
         }
 
-        int level = 0;
-        List<BstNode<T>> nextLevel = new ArrayList<>();
-        nextLevel.add(start);
+        final List<BstNode<T>> nextLevel = new ArrayList<>();
+        nextLevel.add(root);
 
         while (!nextLevel.isEmpty()) {
             final List<BstNode<T>> curLevel = new ArrayList<>(nextLevel);
+            final List<T> curLevelKeys = new ArrayList<>();
             nextLevel.clear();
-            level++;
-            System.out.print("Level " + level + ":");
             for (final BstNode<T> node : curLevel) {
-                System.out.print("\t" + node.key);
+                curLevelKeys.add(node.key);
                 if (node.left != null) {
                     nextLevel.add(node.left);
                 }
@@ -245,29 +248,82 @@ public class BinarySearchTree<T extends Comparable<T>> {
                     nextLevel.add(node.right);
                 }
             }
-            System.out.print("\n");
+            lol.add(curLevelKeys);
         }
+        return lol;
+    }
+
+    /**
+     * Traverse a tree level by level and build a list of lists that contains string representation of keys.
+     * Each sub-list is a list of strings.
+     *
+     * If {@link BstNode#getKeyAsString()} is not overridden
+     *
+     * <pre>{@code
+     *          1
+     *        /  \
+     *       2    3
+     * }
+     * </pre>
+     *
+     * the function returns List[["1", "2, 3"]]
+     *
+     * @param root traverse BST starting at node {@code root}
+     * @param <T>   the type of keys maintained by this tree
+     * @return a list of list of strings that contains a string representation of keys see {@link BstNode#getKeyAsString()}.
+     *         list.get(0) returns level 0 (root), list.get(1) returns all nodes at level 1 and so on
+     */
+    static <T extends Comparable<T>> List<List<String>> traverseByLevelsAsString(BstNode<T> root) {
+        List<List<String>> lol = new ArrayList<>();
+        if (root == null) {
+            return lol;
+        }
+
+        final List<BstNode<T>> nextLevel = new ArrayList<>();
+        nextLevel.add(root);
+
+        while (!nextLevel.isEmpty()) {
+            final List<BstNode<T>> curLevel = new ArrayList<>(nextLevel);
+            final List<String> curLevelKeys = new ArrayList<>();
+            nextLevel.clear();
+            for (final BstNode<T> node : curLevel) {
+                curLevelKeys.add(node.getKeyAsString());
+                if (node.left != null) {
+                    nextLevel.add(node.left);
+                }
+                if (node.right != null) {
+                    nextLevel.add(node.right);
+                }
+            }
+            lol.add(curLevelKeys);
+        }
+        return lol;
     }
 
     /**
      * Breadth-first traversal (level by level). Recursive implementation
      *
-     * @param start traverse BST starting at node {@start}
+     * @param root traverse BST starting at node {@code root}
      * @param <T>   the type of keys maintained by this tree
+     * @return a list of list containing keys. list.get(0) returns level 0 (root),
+     *         list.get(1) returns all nodes at level 1 and so on
      */
-    static <T extends Comparable<T>> void traverseByLevelsRecursive(BstNode<T> start) {
-        if (start == null) {
-            return;
+    static <T extends Comparable<T>> List<List<T>> traverseByLevelsRecursive(BstNode<T> root) {
+        List<List<T>> lol = new ArrayList<>();
+        if (root == null) {
+            return lol;
         }
-        traverseByLevelsRecursiveHelper(Arrays.asList(start), 0);
+        traverseByLevelsRecursiveHelper(Arrays.asList(root), lol);
+        return lol;
     }
 
     // a helper function for {@link #traverseByLevelsRecursive(Entry)}
-    static <T extends Comparable<T>> void traverseByLevelsRecursiveHelper(final List<BstNode<T>> nodes, final int level) {
+    private static <T extends Comparable<T>> void traverseByLevelsRecursiveHelper(final List<BstNode<T>> curLevel,
+                                                                          List<List<T>> acc) {
         final List<BstNode<T>> nextLevel = new ArrayList<>();
-        System.out.print("Level " + level + ":");
-        for (BstNode<T> node : nodes) {
-            System.out.print("\t" + node.key);
+        final List<T> curLevelKeys = new ArrayList<>();
+        for (BstNode<T> node : curLevel) {
+            curLevelKeys.add(node.key);
             if (node.left != null) {
                 nextLevel.add(node.left);
             }
@@ -275,11 +331,11 @@ public class BinarySearchTree<T extends Comparable<T>> {
                 nextLevel.add(node.right);
             }
         }
-        System.out.print("\n");
+        acc.add(curLevelKeys);
 
         // recurse deeper only when we have more nodes to visit
         if (nextLevel.size() > 0) {
-            traverseByLevelsRecursiveHelper(nextLevel, level + 1);
+            traverseByLevelsRecursiveHelper(nextLevel, acc);
         }
     }
 
@@ -328,7 +384,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
         return isValidBst2Helper(root, null);
     }
 
-    public static <T extends Comparable<T>> boolean isValidBst2Helper(BstNode<T> node, BstNode<T> prev) {
+    private static <T extends Comparable<T>> boolean isValidBst2Helper(BstNode<T> node, BstNode<T> prev) {
         if (node == null)
             return true;
 
@@ -379,6 +435,19 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     /**
+     * Validate if the given binary tree is a valid BST.
+     * Version 4: correct. It uses in-order traversal and auxiliary list to store results of the traversal,
+     * visits each node only once. Runs in O(N) and uses O(N) memory (auxiliary list)
+     *
+     * @param root     root of the tree
+     * @return true if the tree is a valid BST, returns false otherwise
+     */
+    public static <T extends Comparable<T>> boolean isValidBst4(BstNode<T> root) {
+        List<T> inOrderTraversalResults = traverseInOrderIterative(root);
+        return Sequence.isSorted(inOrderTraversalResults);
+    }
+
+    /**
      * In-order traversal, recursive version
      * @param root start traversal at node {@code root}
      * @return a list of visited keys
@@ -389,7 +458,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     private static  <T extends Comparable<T>> List<T> traverseInOrderRecursiveHelper(BstNode<T> node,
-                                                                               List<T> nodes) {
+                                                                                     List<T> nodes) {
         if (node == null) {
             return nodes;
         }
@@ -419,6 +488,49 @@ public class BinarySearchTree<T extends Comparable<T>> {
                 cur = cur.right;
             }
         }
+        return nodes;
+    }
+
+
+    /**
+     * Pre-order traversal, recursive version
+     * @param root start traversal at node {@code root}
+     * @return a list of visited keys
+     */
+    public static  <T extends Comparable<T>> List<T> traversePreOrderRecursive(BstNode<T> root) {
+        final List<T> nodes = new ArrayList<>();
+        return traversePreOrderRecursiveHelper(root, nodes);
+    }
+
+    private static  <T extends Comparable<T>> List<T> traversePreOrderRecursiveHelper(BstNode<T> node,
+                                                                                      List<T> nodes) {
+        if (node == null) {
+            return nodes;
+        }
+        nodes.add(node.key);
+        traversePreOrderRecursiveHelper(node.left, nodes);
+        traversePreOrderRecursiveHelper(node.right, nodes);
+        return nodes;
+    }
+
+    /**
+     * Post-order traversal, recursive version
+     * @param root start traversal at node {@code root}
+     * @return a list of visited keys
+     */
+    public static  <T extends Comparable<T>> List<T> traversePostOrderRecursive(BstNode<T> root) {
+        final List<T> nodes = new ArrayList<>();
+        return traversePostOrderRecursiveHelper(root, nodes);
+    }
+
+    private static  <T extends Comparable<T>> List<T> traversePostOrderRecursiveHelper(BstNode<T> node,
+                                                                                       List<T> nodes) {
+        if (node == null) {
+            return nodes;
+        }
+        traversePostOrderRecursiveHelper(node.left, nodes);
+        traversePostOrderRecursiveHelper(node.right, nodes);
+        nodes.add(node.key);
         return nodes;
     }
 
