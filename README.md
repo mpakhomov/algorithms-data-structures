@@ -1,4 +1,8 @@
 Algorithms and data structures in Java programming language
 ==============
 
-My implementation of various algorithms and data structures
+My implementation of various algorithms and data structures. Also, I keep in this repository my experiments with
+data structures / algorithms from JDK, Google Guava, Apache Commons etc.
+
+Java 8 is required, because there is no point in using old versions in a just-for-fun project.
+

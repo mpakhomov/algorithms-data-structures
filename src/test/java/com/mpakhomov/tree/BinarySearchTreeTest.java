@@ -4,6 +4,8 @@ import com.mpakhomov.seq.Sequence;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.contains;
@@ -20,7 +22,7 @@ import static org.hamcrest.Matchers.nullValue;
 public class BinarySearchTreeTest {
 
 /**
- * correctBst
+ * correctBst1
  *
         8
        / \
@@ -35,19 +37,56 @@ public class BinarySearchTreeTest {
    4  7    13
 
  */
-    BinarySearchTree<Integer> correctBst;
-    private void buildCorrectBst() {
-        correctBst = new BinarySearchTree<>();
-        correctBst.insert(8);
-        correctBst.insert(3);
-        correctBst.insert(10);
-        correctBst.insert(1);
-        correctBst.insert(6);
-        correctBst.insert(4);
-        correctBst.insert(7);
-        correctBst.insert(14);
-        correctBst.insert(13);
-        correctBst.insert(9);
+    BinarySearchTree<Integer> correctBst1;
+    // LoL is a list of list - it's a results of breadth-first (level-order) traversal
+    List<List<Integer>> correctBst1Lol;
+    private void buildCorrectBst1() {
+        correctBst1 = new BinarySearchTree<>();
+        correctBst1.insert(8);
+        correctBst1.insert(3);
+        correctBst1.insert(10);
+        correctBst1.insert(1);
+        correctBst1.insert(6);
+        correctBst1.insert(4);
+        correctBst1.insert(7);
+        correctBst1.insert(14);
+        correctBst1.insert(13);
+        correctBst1.insert(9);
+
+        correctBst1Lol = new ArrayList<>();
+        correctBst1Lol.add(Arrays.asList(8));
+        correctBst1Lol.add(Arrays.asList(3, 10));
+        correctBst1Lol.add(Arrays.asList(1, 6, 9, 14));
+        correctBst1Lol.add(Arrays.asList(4, 7, 13));
+    }
+
+/**
+ * correctBst2
+ *
+            40
+           / \
+          /   \
+         /     \
+        /       \
+        25       78
+      / \
+     /   \
+    10     32
+
+ */
+    BinarySearchTree<Integer> correctBst2;
+    List<List<Integer>> correctBst2Lol;
+    private void buildCorrectBst2() {
+        correctBst2 = new BinarySearchTree<>();
+        correctBst2.insert(40);
+        correctBst2.insert(78);
+        correctBst2.insert(25);
+        correctBst2.insert(10);
+        correctBst2.insert(32);
+        correctBst2Lol = new ArrayList<>();
+        correctBst2Lol.add(Arrays.asList(40));
+        correctBst2Lol.add(Arrays.asList(25, 78));
+        correctBst2Lol.add(Arrays.asList(10, 32));
     }
 
 
@@ -118,20 +157,67 @@ public class BinarySearchTreeTest {
 
     @Before
     public void setUp() {
-        buildCorrectBst();
+        buildCorrectBst1();
+        buildCorrectBst2();
         buildIncorrectBst();
         buildIncorrectBst2();
     }
 
     @Test
     public void testSize() {
-        assertThat(correctBst.getSize(), is(equalTo(10)));
+        assertThat(correctBst1.getSize(), is(equalTo(10)));
+    }
+
+    @Test
+    public void testInsertNode() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        tree.insert(new BstNode<>(2));
+        tree.insert(new BstNode<>(1));
+        tree.insert(new BstNode<>(3));
+        BstNode<Integer> root = tree.getRoot();
+        // verify root
+        assertThat(root.parent, equalTo(null));
+
+        // verify left child
+        assertThat(root.left.key, equalTo(1));
+        assertThat(root.left.parent, equalTo(root));
+        assertThat(root.left.left, nullValue());
+        assertThat(root.left.right, nullValue());
+
+        // verify right child
+        assertThat(root.right.key, equalTo(3));
+        assertThat(root.right.parent, equalTo(root));
+        assertThat(root.right.left, nullValue());
+        assertThat(root.right.right, nullValue());
+    }
+
+    @Test
+    public void testInsert() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        tree.insert(2);
+        tree.insert(1);
+        tree.insert(3);
+        BstNode<Integer> root = tree.getRoot();
+        // verify root
+        assertThat(root.parent, equalTo(null));
+
+        // verify left child
+        assertThat(root.left.key, equalTo(1));
+        assertThat(root.left.parent, equalTo(root));
+        assertThat(root.left.left, nullValue());
+        assertThat(root.left.right, nullValue());
+
+        // verify right child
+        assertThat(root.right.key, equalTo(3));
+        assertThat(root.right.parent, equalTo(root));
+        assertThat(root.right.left, nullValue());
+        assertThat(root.right.right, nullValue());
     }
 
     @Test
     public void testSuccessfulSearch13() {
         // test that 13 is found
-        BstNode<Integer> node = correctBst.search(13);
+        BstNode<Integer> node = correctBst1.search(13);
         assertThat(node, is(notNullValue()));
         assertThat(node.key, is(equalTo(13)));
     }
@@ -139,13 +225,16 @@ public class BinarySearchTreeTest {
     @Test
     public void testUnsuccessfulSearch12() {
         // test that 12 is not found
-        BstNode<Integer> node = correctBst.search(12);
+        BstNode<Integer> node = correctBst1.search(12);
         assertThat(node, is(nullValue()));
     }
 
     @Test
     public void validateBst1() {
-        boolean isValid = BinarySearchTree.isValidBst1(correctBst.getRoot());
+        boolean isValid = BinarySearchTree.isValidBst1(correctBst1.getRoot());
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst1(correctBst2.getRoot());
         assertThat(isValid, is(equalTo(true)));
 
         isValid = BinarySearchTree.isValidBst1(incorrectBst1.getRoot());
@@ -157,7 +246,10 @@ public class BinarySearchTreeTest {
 
     @Test
     public void validateBst2() {
-        boolean isValid = BinarySearchTree.isValidBst2(correctBst.getRoot());
+        boolean isValid = BinarySearchTree.isValidBst2(correctBst1.getRoot());
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst2(correctBst2.getRoot());
         assertThat(isValid, is(equalTo(true)));
 
         isValid = BinarySearchTree.isValidBst2(incorrectBst1.getRoot());
@@ -169,7 +261,10 @@ public class BinarySearchTreeTest {
 
     @Test
     public void validateBst3() {
-        boolean isValid = BinarySearchTree.isValidBst3(correctBst.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        boolean isValid = BinarySearchTree.isValidBst3(correctBst1.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst3(correctBst2.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
         assertThat(isValid, is(equalTo(true)));
 
         isValid = BinarySearchTree.isValidBst3(incorrectBst1.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
@@ -180,8 +275,23 @@ public class BinarySearchTreeTest {
     }
 
     @Test
+    public void validateBst4() {
+        boolean isValid = BinarySearchTree.isValidBst4(correctBst1.getRoot());
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst4(correctBst2.getRoot());
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst4(incorrectBst1.getRoot());
+        assertThat(isValid, is(equalTo(false)));
+
+        isValid = BinarySearchTree.isValidBst4(incorrectBst2.getRoot());
+        assertThat(isValid, is(equalTo(false)));
+    }
+
+    @Test
     public void testInOrderRecursive() {
-        List<Integer> nodes = BinarySearchTree.traverseInOrderRecursive(correctBst.getRoot());
+        List<Integer> nodes = BinarySearchTree.traverseInOrderRecursive(correctBst1.getRoot());
         assertThat(nodes, contains(1, 3, 4, 6, 7, 8, 9, 10, 13, 14));
         assertThat(Sequence.isSorted(nodes), is(equalTo(true)));
         assertThat(Sequence.isSorted(nodes.toArray(new Integer[]{})), is(equalTo(true)));
@@ -190,64 +300,61 @@ public class BinarySearchTreeTest {
 
     @Test
     public void testInOrderIterative() {
-        List<Integer> nodes = BinarySearchTree.traverseInOrderIterative(correctBst.getRoot());
+        List<Integer> nodes = BinarySearchTree.traverseInOrderIterative(correctBst1.getRoot());
         assertThat(nodes, contains(1, 3, 4, 6, 7, 8, 9, 10, 13, 14));
         assertThat(Sequence.isSorted(nodes), is(equalTo(true)));
     }
 
+    @Test
+    public void testPreOrder() {
+        List<Integer> nodes = BinarySearchTree.traversePreOrderRecursive(correctBst2.getRoot());
+        assertThat(nodes, contains(40, 25, 10, 32, 78));
+    }
 
-//    @Test
-//    public void testAddWithFind() {
-//        BinarySearchTreeDeprecated.TreeNode node = correctBst.find(13);
-//        // add 0 to the left of 13. this should make a tree invalid BST tree
-//        node.setLeft(new BinarySearchTreeDeprecated.TreeNode(0));
-//        assertThat("This should NOT be a correct BST!", BinarySearchTreeDeprecated.isBST(correctBst.getRoot()),
-//                is(equalTo(false)));
-//        assertThat("This should NOT be a correct BST!", BinarySearchTreeDeprecated.isBSTInOrder(correctBst.getRoot()),
-//                is(equalTo(false)));
-//
-//    }
-//
-//    @Test
-//    public void testCorrectBST() {
-//        assertThat("This should be a correct BST!", BinarySearchTreeDeprecated.isBST(correctBst.getRoot()),
-//                is(equalTo(true)));
-//        assertThat("This should be a correct BST!", BinarySearchTreeDeprecated.isBSTInOrder(correctBst.getRoot()),
-//                is(equalTo(true)));
-//    }
-//
-//    @Test
-//    public void testIncorrectBST() {
-//        assertThat("This should NOT be a correct BST!", BinarySearchTreeDeprecated.isBST(incorrectBst1.getRoot()),
-//                is(equalTo(false)));
-//        assertThat("This should NOT be a correct BST!", BinarySearchTreeDeprecated.isBSTInOrder(incorrectBst1.getRoot()),
-//                is(equalTo(false)));
-//        BinarySearchTreeDeprecated.TraverseInOrder(correctBst.getRoot());
-//    }
-//
+    @Test
+    public void testPostOrder() {
+        List<Integer> nodes = BinarySearchTree.traversePostOrderRecursive(correctBst2.getRoot());
+        assertThat(nodes, contains(10, 32, 25, 78, 40));
+    }
 
-//    @Test
-//    public void testPreOrder() {
-//        BinarySearchTreeDeprecated bst = new BinarySearchTreeDeprecated();
-//        bst.add(40);
-//        bst.add(78);
-//        bst.add(25);
-//        bst.add(10);
-//        bst.add(32);
-//        List<Integer> nodes = BinarySearchTreeDeprecated.traversePreOrder(bst.getRoot());
-//        assertThat(nodes, contains(40, 25, 10, 32, 78));
-//    }
-//
-//    @Test
-//    public void testPostOrder() {
-//        BinarySearchTreeDeprecated bst = new BinarySearchTreeDeprecated();
-//        bst.add(40);
-//        bst.add(78);
-//        bst.add(25);
-//        bst.add(10);
-//        bst.add(32);
-//        List<Integer> nodes = BinarySearchTreeDeprecated.traversePostOrder(bst.getRoot());
-//        assertThat(nodes, contains(10, 32, 25, 78, 40));
-//    }
+    @Test
+    public void testTraverseByLevelsRecursive() {
+        List<List<Integer>> levels = BinarySearchTree.traverseByLevelsRecursive(correctBst1.getRoot());
+        assertThat(levels, contains(correctBst1Lol.toArray()));
 
+        levels = BinarySearchTree.traverseByLevelsRecursive(correctBst2.getRoot());
+        assertThat(levels, contains(correctBst2Lol.toArray()));
+    }
+
+    @Test
+    public void testTraverseByLevelsIterative() {
+        List<List<Integer>> levels = BinarySearchTree.traverseByLevelsIterative(correctBst1.getRoot());
+        assertThat(levels, contains(correctBst1Lol.toArray()));
+
+        levels = BinarySearchTree.traverseByLevelsIterative(correctBst2.getRoot());
+        assertThat(levels, contains(correctBst2Lol.toArray()));
+    }
+
+    @Test
+    public void traverseByLevelsAsString() {
+        List<List<String>> expected = convertToLolOfStrings(correctBst1Lol);
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(correctBst1.getRoot());
+        assertThat(levels, contains(expected.toArray()));
+
+        expected = convertToLolOfStrings(correctBst2Lol);
+        levels = BinarySearchTree.traverseByLevelsAsString(correctBst2.getRoot());
+        assertThat(levels, contains(expected.toArray()));
+    }
+
+    private <T> List<List<String>> convertToLolOfStrings(List<List<T>> lol) {
+        List<List<String>> lolOfStrings = new ArrayList<>();
+        for (List<T> level : lol) {
+            List<String> keysAsStrings = new ArrayList<>();
+            for (T element : level) {
+                keysAsStrings.add(element.toString());
+            }
+            lolOfStrings.add(keysAsStrings);
+        }
+        return lolOfStrings;
+    }
 }
