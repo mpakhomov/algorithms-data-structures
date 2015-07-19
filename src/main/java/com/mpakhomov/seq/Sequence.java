@@ -1,7 +1,6 @@
 package com.mpakhomov.seq;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author mpakhomov
@@ -61,5 +60,50 @@ public class Sequence {
             prev = cur;
         }
         return true;
+    }
+
+    /**
+     * Combines multiple iterators into a single iterator. The returned iterator
+     * iterates across the elements of each iterator in {@code iterators}. The input
+     * iterators are not polled until necessary.
+     *
+     * @param iterators input iterators
+     * @param <T>
+     * @return iterator that iterates across across all elements of input iterators
+     */
+    public static <T> Iterator<T> joinIterators(Iterator<T>... iterators)  {
+        final Deque<T> queue = new ArrayDeque<>((Collection<T>) Arrays.asList(iterators));
+
+        return new Iterator<T>() {
+
+            private Iterator<T> iterator = (Iterator<T>) queue.poll();
+
+            @Override
+            public boolean hasNext() {
+                if (iterator == null && queue.isEmpty()) {
+                    return false;
+                } else if (iterator == null) {
+                    iterator = (Iterator<T>) queue.poll();
+                }
+
+                if (!iterator.hasNext()) {
+                    iterator = (Iterator<T>) queue.poll();
+                }
+
+                if (iterator != null) {
+                    return iterator.hasNext();
+                }
+                return false;
+            }
+
+            @Override
+            public T next() {
+                if (hasNext()) {
+                    return iterator.next();
+                } else {
+                    return null;
+                }
+            }
+        };
     }
 }

@@ -459,16 +459,16 @@ public class BinarySearchTreeTest {
 
     @Test
     public void testSuccessor() {
-        assertThat(BinarySearchTree.successor(treeWithOneNode.getRoot()).key, equalTo(14));
+        assertThat(BinarySearchTree.successor(treeWithOneNode.getRoot()), is(nullValue()));
 
         // correctBst1
 
         // predecessor of the node 3
         assertThat(BinarySearchTree.successor(
-                correctBst1.search(3)).key, equalTo(1));
+                correctBst1.search(3)).key, equalTo(4));
 
         assertThat(BinarySearchTree.successor(
-                correctBst1.search(1)), equalTo(3));
+                correctBst1.search(1)).key, equalTo(3));
 
         assertThat(BinarySearchTree.successor(
                 correctBst1.search(9)).key, equalTo(10));
