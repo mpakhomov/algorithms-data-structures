@@ -346,6 +346,7 @@ public class BinarySearchTreeTest {
         assertThat(levels, contains(expected.toArray()));
     }
 
+    // LoL is a list of lists
     private <T> List<List<String>> convertToLolOfStrings(List<List<T>> lol) {
         List<List<String>> lolOfStrings = new ArrayList<>();
         for (List<T> level : lol) {
