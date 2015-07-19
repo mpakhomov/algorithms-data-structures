@@ -1,4 +1,4 @@
-package com.mpakhomov;
+package com.mpakhomov.queue;
 
 /**
  * Created with IntelliJ IDEA.

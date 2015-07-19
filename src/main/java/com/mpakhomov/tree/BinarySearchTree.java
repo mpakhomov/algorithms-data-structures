@@ -110,14 +110,64 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     /**
+     * Delete a node from the tree associated with the given key
+     * @param key key to be deleted
+     * @return true on success, false otherwise
+     */
+    public boolean delete(T key) {
+        BstNode<T> node = this.search(key);
+        if (node != null) {
+            delete(node);
+            return false;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Delete a node from the tree.
+     *
+     * <p>Important: if a node in a binary search tree has two children, then its successor has
+      * no left child and its predecessor has no right child
+     *
+     * @param node node to be deleted. It's assumed that node is non null. If it's null then NPE is thrown
+     */
+    public void delete(BstNode<T> node) {
+        Objects.requireNonNull(node);
+        if (node.left == null) {
+            transplant(node, node.right);
+        } else if (node.right == null) {
+            transplant(node, node.left);
+        } else {
+            // y is the successor of node (we search it in node's right subtree)
+            BstNode<T> y = treeMinimum(node.right);
+            if (y.parent != node) {
+                // it's guaranteed that y.left is null. replace y with its right subtree
+                transplant(y, y.right);
+                y.right = node.right;
+                y.right.parent = y;
+            }
+            // finally, replace node with its successor y
+            transplant(node, y);
+            y.left = node.left;
+            y.left.parent = y;
+        }
+        size--;
+    }
+
+    /**
      * Replace subtree u with subtree v. From the book: it replaces the subtree rooted at node u with
-     * the subtree rooted at node v, node u's parent becomes node v's parent, and u's
-     * parent ends up having v as its appropriate child
+     * the subtree rooted at node v, node u's parent becomes node v's parent, and u's
+     * parent ends up having v as its appropriate child
+     *
+     * <p> u should be non null
+     * v can be null
      *
      * @param u subtree which is to be replaced
      * @param v a replacement for subtree u
      */
     void transplant(BstNode<T> u, BstNode<T> v) {
+        Objects.requireNonNull(u);
         if (u == root) {
             root = v;
         } else if (u == u.parent.left) {

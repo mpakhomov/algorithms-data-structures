@@ -1,10 +1,11 @@
-package com.mpakhomov;
+package com.mpakhomov.queue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 
+import com.mpakhomov.queue.*;
 import org.junit.Test;
 
 public class CircularBufferTest {

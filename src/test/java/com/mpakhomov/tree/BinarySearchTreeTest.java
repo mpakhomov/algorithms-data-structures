@@ -89,6 +89,22 @@ public class BinarySearchTreeTest {
         correctBst2Lol.add(Arrays.asList(10, 32));
     }
 
+    /**
+     * treeWithOneNode
+     *        1
+     *       /\
+     *      /  \
+     *    null null
+     */
+    BinarySearchTree<Integer> treeWithOneNode;
+    List<List<Integer>> treeWithOneNodeLol;
+    private void buildtreeWithOneNode() {
+        treeWithOneNode = new BinarySearchTree<>();
+        treeWithOneNode.insert(1);
+        treeWithOneNodeLol = new ArrayList<>();
+        treeWithOneNodeLol.add(Arrays.asList(1));
+    }
+
 
 /**
  * incorrectBst1
@@ -161,6 +177,7 @@ public class BinarySearchTreeTest {
         buildCorrectBst2();
         buildIncorrectBst();
         buildIncorrectBst2();
+        buildtreeWithOneNode();
     }
 
     @Test
@@ -237,6 +254,9 @@ public class BinarySearchTreeTest {
         isValid = BinarySearchTree.isValidBst1(correctBst2.getRoot());
         assertThat(isValid, is(equalTo(true)));
 
+        isValid = BinarySearchTree.isValidBst1(treeWithOneNode.getRoot());
+        assertThat(isValid, is(equalTo(true)));
+
         isValid = BinarySearchTree.isValidBst1(incorrectBst1.getRoot());
         assertThat(isValid, is(equalTo(false)));
 
@@ -250,6 +270,9 @@ public class BinarySearchTreeTest {
         assertThat(isValid, is(equalTo(true)));
 
         isValid = BinarySearchTree.isValidBst2(correctBst2.getRoot());
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst2(treeWithOneNode.getRoot());
         assertThat(isValid, is(equalTo(true)));
 
         isValid = BinarySearchTree.isValidBst2(incorrectBst1.getRoot());
@@ -267,6 +290,9 @@ public class BinarySearchTreeTest {
         isValid = BinarySearchTree.isValidBst3(correctBst2.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
         assertThat(isValid, is(equalTo(true)));
 
+        isValid = BinarySearchTree.isValidBst3(treeWithOneNode.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        assertThat(isValid, is(equalTo(true)));
+
         isValid = BinarySearchTree.isValidBst3(incorrectBst1.getRoot(), Integer.MIN_VALUE, Integer.MAX_VALUE);
         assertThat(isValid, is(equalTo(false)));
 
@@ -280,6 +306,9 @@ public class BinarySearchTreeTest {
         assertThat(isValid, is(equalTo(true)));
 
         isValid = BinarySearchTree.isValidBst4(correctBst2.getRoot());
+        assertThat(isValid, is(equalTo(true)));
+
+        isValid = BinarySearchTree.isValidBst4(treeWithOneNode.getRoot());
         assertThat(isValid, is(equalTo(true)));
 
         isValid = BinarySearchTree.isValidBst4(incorrectBst1.getRoot());
@@ -357,5 +386,145 @@ public class BinarySearchTreeTest {
             lolOfStrings.add(keysAsStrings);
         }
         return lolOfStrings;
+    }
+
+    @Test
+    public void testTreeMinimum() {
+        assertThat(BinarySearchTree.treeMinimum(treeWithOneNode.getRoot()).key, equalTo(1));
+
+        // correctBst1
+
+        // minimum of the subtree with root at 3
+        assertThat(BinarySearchTree.treeMinimum(
+            correctBst1.search(3)).key, equalTo(1));
+
+        // minimum of the subtree with root at 8
+        assertThat(BinarySearchTree.treeMinimum(
+                        correctBst1.getRoot()).key, equalTo(1));
+
+        assertThat(BinarySearchTree.treeMinimum(
+                        correctBst1.search(13)).key, equalTo(13));
+
+    }
+
+    @Test
+    public void testTreeMaximum() {
+        assertThat(BinarySearchTree.treeMaximum(treeWithOneNode.getRoot()).key, equalTo(1));
+
+        // correctBst1
+
+        // minimum of the subtree with root at 3
+        assertThat(BinarySearchTree.treeMaximum(
+                correctBst1.search(3)).key, equalTo(7));
+
+        // minimum of the subtree with root at 8
+        assertThat(BinarySearchTree.treeMaximum(
+                correctBst1.getRoot()).key, equalTo(14));
+
+        assertThat(BinarySearchTree.treeMaximum(
+                correctBst1.search(13)).key, equalTo(13));
+
+    }
+
+    @Test
+    public void testPredecessor() {
+        assertThat(BinarySearchTree.predecessor(treeWithOneNode.getRoot()), is(nullValue()));
+
+        // correctBst1
+
+        // predecessor of the node 3
+        assertThat(BinarySearchTree.predecessor(
+                correctBst1.search(3)).key, equalTo(1));
+
+        assertThat(BinarySearchTree.predecessor(
+                correctBst1.search(1)), is(nullValue()));
+
+        assertThat(BinarySearchTree.predecessor(
+                correctBst1.search(9)).key, equalTo(8));
+
+        assertThat(BinarySearchTree.predecessor(
+                correctBst1.search(10)).key, equalTo(9));
+
+        // minimum of the subtree with root at 8
+        assertThat(BinarySearchTree.predecessor(
+                correctBst1.getRoot()).key, equalTo(7));
+
+        assertThat(BinarySearchTree.predecessor(
+                correctBst1.search(13)).key, equalTo(10));
+
+        assertThat(BinarySearchTree.predecessor(
+                correctBst1.search(14)).key, equalTo(13));
+
+    }
+
+    @Test
+    public void testSuccessor() {
+        assertThat(BinarySearchTree.successor(treeWithOneNode.getRoot()).key, equalTo(14));
+
+        // correctBst1
+
+        // predecessor of the node 3
+        assertThat(BinarySearchTree.successor(
+                correctBst1.search(3)).key, equalTo(1));
+
+        assertThat(BinarySearchTree.successor(
+                correctBst1.search(1)), equalTo(3));
+
+        assertThat(BinarySearchTree.successor(
+                correctBst1.search(9)).key, equalTo(10));
+
+        assertThat(BinarySearchTree.successor(
+                correctBst1.search(10)).key, equalTo(13));
+
+        // minimum of the subtree with root at 8
+        assertThat(BinarySearchTree.successor(
+                correctBst1.getRoot()).key, equalTo(9));
+
+        assertThat(BinarySearchTree.successor(
+                correctBst1.search(13)).key, equalTo(14));
+
+        assertThat(BinarySearchTree.successor(
+                correctBst1.search(14)), is(nullValue()));
+    }
+
+    @Test
+    public void testDelete() {
+        correctBst1.delete(1);
+        assertThat(correctBst1.getSize(), equalTo(9));
+
+        correctBst1.delete(10);
+        assertThat(correctBst1.getSize(), equalTo(8));
+        List<List<String>> lol = new ArrayList<>();
+        lol.add(Arrays.asList("8"));
+        lol.add(Arrays.asList("3", "13"));
+        lol.add(Arrays.asList("6", "9", "14"));
+        lol.add(Arrays.asList("4", "7"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(correctBst1.getRoot());
+        assertThat(levels, contains(lol.toArray()));
+        assertThat(BinarySearchTree.traverseInOrderIterative(correctBst1.getRoot()),
+                contains(3, 4, 6, 7, 8, 9, 13, 14));
+
+        correctBst1.delete(3);
+        assertThat(correctBst1.getSize(), equalTo(7));
+        lol.clear();
+        lol.add(Arrays.asList("8"));
+        lol.add(Arrays.asList("6", "13"));
+        lol.add(Arrays.asList("4", "7", "9", "14"));
+        levels = BinarySearchTree.traverseByLevelsAsString(correctBst1.getRoot());
+        assertThat(levels, contains(lol.toArray()));
+        assertThat(BinarySearchTree.traverseInOrderIterative(correctBst1.getRoot()),
+                contains(4, 6, 7, 8, 9, 13, 14));
+
+        correctBst1.delete(8);
+        correctBst1.delete(13);
+        assertThat(correctBst1.getSize(), equalTo(5));
+        lol.clear();
+        lol.add(Arrays.asList("9"));
+        lol.add(Arrays.asList("6", "14"));
+        lol.add(Arrays.asList("4", "7"));
+        levels = BinarySearchTree.traverseByLevelsAsString(correctBst1.getRoot());
+        assertThat(levels, contains(lol.toArray()));
+        assertThat(BinarySearchTree.traverseInOrderIterative(correctBst1.getRoot()),
+                contains(4, 6, 7, 9, 14));
     }
 }

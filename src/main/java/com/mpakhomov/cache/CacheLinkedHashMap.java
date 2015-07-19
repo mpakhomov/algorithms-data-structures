@@ -1,4 +1,4 @@
-package com.mpakhomov;
+package com.mpakhomov.cache;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,7 +28,8 @@ public class CacheLinkedHashMap extends LinkedHashMap {
      * need to override this protected method to implement cache eviction policy
      *
      * @param eldest
-     * @return
+     * @return true if current size of the cache is greater than {@code MAX_ENTRIES},
+     *         return false otherwise
      */
     @Override
     protected boolean removeEldestEntry(Map.Entry eldest) {
