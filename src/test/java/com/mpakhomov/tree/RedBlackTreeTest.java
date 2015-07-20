@@ -71,7 +71,6 @@ public class RedBlackTreeTest {
         treeFromTheBookLol.add(Arrays.asList("2:R", "11:R"));
         treeFromTheBookLol.add(Arrays.asList("1:B", "5:B", "8:B", "14:B"));
         treeFromTheBookLol.add(Arrays.asList("4:R", "15:R"));
-        BTreePrinter.printNode(treeFromTheBook.getRoot());
     }
 
     @Test
