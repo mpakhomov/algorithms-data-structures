@@ -14,13 +14,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
     public final static boolean BLACK = true;
     public final static boolean RED = false;
 
-    // TODO:
-    // Implement iterative in-order tree walk (traversion).
-    // Hint: An easy solution uses a stack as an auxiliary data structure.
-    // A more complicated, but elegant, solution uses no stack but assumes that we can test two pointers for equality
-    // TODO:
-    // Implement: breadth-first (level-order) tree traversal
-
     /**
      * Insert an entry to Red Black Tree. Runs in O(logN) time
      *
@@ -37,7 +30,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
 
     /**
-     * Fix rbt properties after insertion of a new {@code entry}
+     * Fix rbt properties after insertion of a new {@code node}
      *
      * @param z red-black tree entry
      */
@@ -176,26 +169,11 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
 
     public static void main(String[] args) {
-//        testTreeFromTheBook();
 //        testInsertion();
 //        testAnotherInsertion();
         testThirdInsertion();
     }
 
-    static void testTreeFromTheBook() {
-        RedBlackTree tree = new RedBlackTree();
-        tree.put(11);
-        tree.put(14);
-        tree.put(2);
-        tree.put(1);
-        tree.put(7);
-        tree.put(5);
-        tree.put(8);
-        tree.put(15);
-
-        System.out.println("");
-        printInOrder(tree.getRoot());
-    }
 
     static void testThirdInsertion() {
 
