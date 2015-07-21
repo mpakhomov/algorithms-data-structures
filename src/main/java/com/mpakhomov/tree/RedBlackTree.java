@@ -188,7 +188,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         tree.put(8);
 
         System.out.println("");
-        printInOrder(tree.getRoot());
+        BinarySearchTree.traverseInOrderIterative(tree.getRoot());
         System.out.println("");
         System.out.println(treeMinimum(tree.getRoot()).key);
         System.out.println(treeMaximum(tree.getRoot()).key);
@@ -202,51 +202,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         traverseByLevelsRecursive(tree.getRoot());
     }
 
-    static void testInsertion() {
 
-        RedBlackTree tree = new RedBlackTree();
-        tree.put(11);
-        tree.put(14);
-        tree.put(2);
-        tree.put(1);
-        tree.put(7);
-        tree.put(5);
-        tree.put(8);
-        tree.put(15);
-        tree.put(4);
-
-        System.out.println("");
-        printInOrder(tree.getRoot());
-    }
-
-    static void testAnotherInsertion() {
-
-        RedBlackTree tree = new RedBlackTree();
-        tree.put(7);
-        tree.put(3);
-        tree.put(18);
-        tree.put(10);
-        tree.put(22);
-        tree.put(88);
-        tree.put(11);
-        tree.put(26);
-        tree.put(15);
-
-        System.out.println("");
-        printInOrder(tree.getRoot());
-    }
-
-    static private void printInOrder(BstNode node) {
-        if (node == null) {
-            return;
-        }
-        if (node == null ){
-            return;
-        }
-        printInOrder(node.left);
-        System.out.print(node.key + ", ");
-        printInOrder(node.right);
-    }
 
     // utility methods to avoid NPE when p is null. Also, they cast {@link BstEntry} to {@code RbtEntry},
     // so that I don't have to write boilerplate code in the algorithms implementation. I want to keep

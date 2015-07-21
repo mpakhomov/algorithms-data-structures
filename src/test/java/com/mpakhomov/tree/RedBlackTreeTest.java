@@ -49,11 +49,12 @@ public class RedBlackTreeTest {
             /           \
           4:R           15:R
     */
-    RedBlackTree<Integer> treeFromTheBook;
-    List<List<String>> treeFromTheBookLol;
+    private RedBlackTree<Integer> treeFromTheBook;
+    private List<List<String>> treeFromTheBookLol;
     @Before
     public void setUp() {
         buildRbtFromClr();
+        buildTree2();
     }
 
     private void buildRbtFromClr() {
@@ -73,6 +74,60 @@ public class RedBlackTreeTest {
         treeFromTheBookLol.add(Arrays.asList("4:R", "15:R"));
     }
 
+/*
+ * tree2 before insertion
+ *
+
+             7:B
+             / \
+            /   \
+           /     \
+          /       \
+        3:B       18:R
+                   / \
+                  /   \
+                 10:B   22:B
+                 / \     \
+               8:R 11:R  26:R
+
+    After insertion
+
+           10:B
+          / \
+         /   \
+        /     \
+       /       \
+       7:R       18:R
+      / \        / \
+     /   \      /   \
+   3:B   8:B  11:B   22:B
+                \        \
+                15:R      26:R
+
+
+*/
+
+    private RedBlackTree<Integer> tree2;
+    private List<List<String>> tree2Lol;
+    private void buildTree2() {
+        tree2 = new RedBlackTree();
+        tree2.put(7);
+        tree2.put(3);
+        tree2.put(18);
+        tree2.put(10);
+        tree2.put(22);
+        tree2.put(8);
+        tree2.put(11);
+        tree2.put(26);
+//        tree2.put(15);
+        tree2Lol = new ArrayList<>();
+        tree2Lol.add(Arrays.asList("10:B"));
+        tree2Lol.add(Arrays.asList("7:R", "18:R"));
+        tree2Lol.add(Arrays.asList("3:B", "8:B", "11:B", "22:B"));
+        tree2Lol.add(Arrays.asList("15:R", "26:R"));
+    }
+
+
     @Test
     public void testInsertionTreeFromTheBook() {
         treeFromTheBook.put(4);
@@ -81,5 +136,15 @@ public class RedBlackTreeTest {
         assertThat(actual, contains(1, 2, 4, 5, 7, 8, 11, 14, 15));
         List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(treeFromTheBook.getRoot());
         assertThat(levels, contains(treeFromTheBookLol.toArray()));
+    }
+
+    @Test
+    public void testInsertionTree2() {
+        tree2.put(15);
+        assertThat(tree2.getSize(), equalTo(9));
+        List<Integer> actual = BinarySearchTree.traverseInOrderIterative(tree2.getRoot());
+        assertThat(actual, contains(3, 7, 8, 10, 11, 15, 18, 22, 26));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree2.getRoot());
+        assertThat(levels, contains(tree2Lol.toArray()));
     }
 }
