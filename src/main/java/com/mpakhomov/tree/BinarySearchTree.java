@@ -168,6 +168,9 @@ public class BinarySearchTree<T extends Comparable<T>> {
      */
     void transplant(BstNode<T> u, BstNode<T> v) {
         Objects.requireNonNull(u);
+
+        // Both variants are OK
+        //if (u.parent == null) {
         if (u == root) {
             root = v;
         } else if (u == u.parent.left) {

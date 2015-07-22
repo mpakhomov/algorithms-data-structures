@@ -1,6 +1,8 @@
 package com.mpakhomov.tree;
 
 
+import java.util.Objects;
+
 /**
  * Based on Introduction to Algorithms, third edition
  * By Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein
@@ -165,6 +167,32 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         }
         y.right = x; // put x on y's right
         x.parent = y;
+    }
+
+    /**
+     * Modified version of {@link BinarySearchTree#transplant(BstNode, BstNode)}
+     *
+     * <p> u should be non null
+     * v can be null
+     *
+     * @param u subtree which is to be replaced
+     * @param v a replacement for subtree u
+     */
+    void rbTransplant(RbtNode<T> u, RbtNode<T> v) {
+        Objects.requireNonNull(u);
+        if (u == root) {
+            root = v;
+        } else if (u == u.parent.left) {
+            // u is a left child
+            u.parent.left = v;
+        } else {
+            // u is a right child
+            u.parent.right = v;
+        }
+        // TODO: why it's needed?
+//        if (v != null) {
+            v.parent = u.parent;
+//        }
     }
 
 
