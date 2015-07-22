@@ -168,41 +168,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
     }
 
 
-    public static void main(String[] args) {
-//        testInsertion();
-//        testAnotherInsertion();
-        testThirdInsertion();
-    }
-
-
-    static void testThirdInsertion() {
-
-        RedBlackTree tree = new RedBlackTree();
-        tree.put(1);
-        tree.put(2);
-        tree.put(3);
-        tree.put(4);
-        tree.put(5);
-        tree.put(6);
-        tree.put(7);
-        tree.put(8);
-
-        System.out.println("");
-        BinarySearchTree.traverseInOrderIterative(tree.getRoot());
-        System.out.println("");
-        System.out.println(treeMinimum(tree.getRoot()).key);
-        System.out.println(treeMaximum(tree.getRoot()).key);
-        System.out.println(successor(tree.getRoot()).key);
-        BstNode<Integer> x = tree.search(1);
-        System.out.println(keyOf(successor(x)));
-        System.out.println(keyOf(predecessor(x)));
-        x = tree.getRoot();
-        System.out.println(keyOf(predecessor(x)));
-        traverseByLevelsIterative(tree.getRoot());
-        traverseByLevelsRecursive(tree.getRoot());
-    }
-
-
 
     // utility methods to avoid NPE when p is null. Also, they cast {@link BstEntry} to {@code RbtEntry},
     // so that I don't have to write boilerplate code in the algorithms implementation. I want to keep
