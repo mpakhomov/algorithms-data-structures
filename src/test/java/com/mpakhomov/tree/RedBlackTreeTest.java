@@ -208,4 +208,16 @@ public class RedBlackTreeTest {
         List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree3.getRoot());
         assertThat(levels, contains(tree3Lol.toArray()));
     }
+
+    @Test
+    public void testDeleteFromEmptyTree() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.delete(1);
+    }
+
+    @Test
+    public void testDeleteNullFromTree() {
+        Integer nullInteger = null;
+        tree2.delete(nullInteger);
+    }
 }

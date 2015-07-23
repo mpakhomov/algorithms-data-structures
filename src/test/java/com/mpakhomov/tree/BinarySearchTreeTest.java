@@ -527,4 +527,16 @@ public class BinarySearchTreeTest {
         assertThat(BinarySearchTree.traverseInOrderIterative(correctBst1.getRoot()),
                 contains(4, 6, 7, 9, 14));
     }
+
+    @Test
+    public void testDeleteFromEmptyTree() {
+        BinarySearchTree<Integer> tree = new RedBlackTree<>();
+        tree.delete(1);
+    }
+
+    @Test
+    public void testDeleteNullFromTree() {
+        Integer nullInteger = null;
+        correctBst1.delete(nullInteger);
+    }
 }
