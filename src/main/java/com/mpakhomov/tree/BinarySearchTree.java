@@ -589,22 +589,22 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
 
-
-    // utility methods to avoid NPE when p is null
-    static <T extends Comparable<T>> BstNode<T> parentOf(BstNode<T> p) {
-        return (p == null ? null : p.parent);
-    }
-
-    static <T extends Comparable<T>> BstNode<T> leftOf(BstNode<T> p) {
-        return (p == null) ? null : p.left;
-    }
-
-    static <T extends Comparable<T>> BstNode<T> rightOf(BstNode<T> p) {
-        return (p == null) ? null : p.right;
-    }
-
-    static <T extends Comparable<T>> T keyOf(BstNode<T> p) {
-        return (p == null) ? null : p.key;
-    }
+//
+//    // utility methods to avoid NPE when p is null
+//    static <T extends Comparable<T>> BstNode<T> parentOf(BstNode<T> p) {
+//        return (p == null ? null : p.parent);
+//    }
+//
+//    static <T extends Comparable<T>> BstNode<T> leftOf(BstNode<T> p) {
+//        return (p == null) ? null : p.left;
+//    }
+//
+//    static <T extends Comparable<T>> BstNode<T> rightOf(BstNode<T> p) {
+//        return (p == null) ? null : p.right;
+//    }
+//
+//    static <T extends Comparable<T>> T keyOf(BstNode<T> p) {
+//        return (p == null) ? null : p.key;
+//    }
 
 }

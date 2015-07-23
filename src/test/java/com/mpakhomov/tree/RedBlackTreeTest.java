@@ -210,14 +210,44 @@ public class RedBlackTreeTest {
     }
 
     @Test
-    public void testDeleteFromEmptyTree() {
+    public void deleteANodeWith2Childs() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
-        tree.delete(1);
+        tree.put(1);
+        tree.put(2);
+        tree.put(3);
+        tree.put(4);
+        tree.put(6);
+        tree.put(5);
+        tree.put(15);
+        tree.put(40);
+        tree.put(11);
+        tree.rbtDelete(6);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testDeleteNullFromTree() {
-        Integer nullInteger = null;
-        tree2.delete(nullInteger);
+    @Test
+    public void deleteSucessorIsARightChild() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(1);
+        tree.put(2);
+        tree.put(3);
+        tree.put(4);
+        tree.put(6);
+        tree.put(5);
+        tree.put(15);
+        tree.put(40);
+        tree.put(11);
+        tree.rbtDelete(15);
     }
+
+//    @Test
+//    public void testDeleteFromEmptyTree() {
+//        RedBlackTree<Integer> tree = new RedBlackTree<>();
+//        tree.rbtDelete(1);
+//    }
+//
+//    @Test(expected = NullPointerException.class)
+//    public void testDeleteNullFromTree() {
+//        Integer nullInteger = null;
+//        tree2.rbtDelete(nullInteger);
+//    }
 }

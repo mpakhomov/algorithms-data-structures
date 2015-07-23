@@ -101,6 +101,59 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         setColor(root, BLACK);
     }
 
+
+    public boolean rbtDelete(T key) {
+        //return super.delete(key);
+        RbtNode<T> node = (RbtNode)search(key);
+        if (node != null) {
+            rbtDelete((RbtNode)node);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void rbtDelete(RbtNode<T> z) {
+        Objects.requireNonNull(z);
+        RbtNode<T> y = z, x = null;
+        boolean originalColorOfY = y.color;
+
+        if (z.left == null) {
+            x = (RbtNode<T>)z.right;
+            rbTransplant(z, (RbtNode<T>)z.right);
+        } else if (z.right == null) {
+            x = (RbtNode<T>)z.left;
+            rbTransplant(z, (RbtNode<T>)z.left);
+        } else {
+            // find the successor of z
+            y = (RbtNode<T>)treeMinimum(z.right);
+            originalColorOfY = y.color;
+            x = (RbtNode<T>)y.right;
+            if (parentOf(y) == z) {
+                // TODO: WTF? y is already parent of x
+                //x.parent = y;
+            } else {
+                rbTransplant(y, rightOf(y));
+                y.right = z.right;
+                y.right.parent = y;
+            }
+            rbTransplant(z, y);
+            y.left = z.left;
+            y.left.parent = y;
+            y.color = z.color;
+        }
+
+        if (originalColorOfY == BLACK) {
+            rbDeleteFixUp(x);
+        }
+
+    }
+
+    void rbDeleteFixUp(RbtNode<T> x) {
+
+    }
+
+
     /**
      * Left rotation is used to swap a parent node x with its <em>right</em> child y, so that
      * y becomes a new parent of x and x becomes y's right child. It's an operation symmetric to
@@ -210,4 +263,16 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         }
     }
 
+    // utility methods to avoid NPE when p is null
+    static <T extends Comparable<T>> RbtNode<T> parentOf(RbtNode<T> p) {
+        return (p == null ? null : (RbtNode<T>) p.parent);
+    }
+
+    static <T extends Comparable<T>> RbtNode<T> leftOf(RbtNode<T> p) {
+        return (p == null) ? null : (RbtNode<T>) p.left;
+    }
+
+    static <T extends Comparable<T>> RbtNode<T> rightOf(RbtNode<T> p) {
+        return (p == null) ? null : (RbtNode<T>) p.right;
+    }
 }
