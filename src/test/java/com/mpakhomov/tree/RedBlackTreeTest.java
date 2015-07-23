@@ -102,8 +102,8 @@ public class RedBlackTreeTest {
       / \        / \
      /   \      /   \
    3:B   8:B  11:B   22:B
-                \        \
-                15:R      26:R
+                \      \
+                15:R    26:R
 
 */
 
