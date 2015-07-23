@@ -96,10 +96,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
      * @return tree node if found, null otherwise
      */
     public BstNode<T> search(T key) {
-        if (key == null) {
-            return null;
-        }
-
+        Objects.requireNonNull(key);
         BstNode<T> x = root;
         while (x != null && key.compareTo(x.key) != 0) {
             if (key.compareTo(x.key) < 0) {

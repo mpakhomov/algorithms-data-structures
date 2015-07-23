@@ -534,7 +534,7 @@ public class BinarySearchTreeTest {
         tree.delete(1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testDeleteNullFromTree() {
         Integer nullInteger = null;
         correctBst1.delete(nullInteger);

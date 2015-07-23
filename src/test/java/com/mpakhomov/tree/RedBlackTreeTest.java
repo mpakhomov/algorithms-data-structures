@@ -215,7 +215,7 @@ public class RedBlackTreeTest {
         tree.delete(1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testDeleteNullFromTree() {
         Integer nullInteger = null;
         tree2.delete(nullInteger);
