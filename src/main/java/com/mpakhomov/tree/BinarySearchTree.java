@@ -7,6 +7,7 @@ import java.util.*;
 /**
  * Based on Introduction to Algorithms, third edition
  * By Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein
+ * aka CLRS book
  *
  * @param <T> the type of keys maintained by this tree
  * @since: 7/12/15
@@ -131,26 +132,26 @@ public class BinarySearchTree<T extends Comparable<T>> {
      * <p>Important: if a node in a binary search tree has two children, then its successor has
       * no left child and its predecessor has no right child
      *
-     * @param node node to be deleted. It's assumed that node is non null. If it's null then NPE is thrown
+     * @param z node to be deleted. It's assumed that the node is non null. If it's null then NPE is thrown
      */
-    public void delete(BstNode<T> node) {
-        Objects.requireNonNull(node);
-        if (node.left == null) {
-            transplant(node, node.right);
-        } else if (node.right == null) {
-            transplant(node, node.left);
+    public void delete(BstNode<T> z) {
+        Objects.requireNonNull(z);
+        if (z.left == null) {
+            transplant(z, z.right);
+        } else if (z.right == null) {
+            transplant(z, z.left);
         } else {
-            // y is the successor of node (we search it in node's right subtree)
-            BstNode<T> y = treeMinimum(node.right);
-            if (y.parent != node) {
+            // y is the successor of node (we search it in z's right subtree)
+            BstNode<T> y = treeMinimum(z.right);
+            if (y.parent != z) {
                 // it's guaranteed that y.left is null. replace y with its right subtree
                 transplant(y, y.right);
-                y.right = node.right;
+                y.right = z.right;
                 y.right.parent = y;
             }
-            // finally, replace node with its successor y
-            transplant(node, y);
-            y.left = node.left;
+            // finally, replace z with its successor y
+            transplant(z, y);
+            y.left = z.left;
             y.left.parent = y;
         }
         size--;

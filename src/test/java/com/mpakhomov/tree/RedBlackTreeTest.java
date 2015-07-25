@@ -20,6 +20,7 @@ public class RedBlackTreeTest {
     /**
      * tree from the MIT algorithms book by
      * Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein
+     * aka CLRS book
 
        Before Insertion
 
@@ -53,12 +54,12 @@ public class RedBlackTreeTest {
     private List<List<String>> treeFromTheBookLol;
     @Before
     public void setUp() {
-        buildRbtFromClr();
+        buildRbtFromClrsBook();
         buildTree2();
         buildTree3();
     }
 
-    private void buildRbtFromClr() {
+    private void buildRbtFromClrsBook() {
         treeFromTheBook = new RedBlackTree<>();
         treeFromTheBook.put(11);
         treeFromTheBook.put(14);
@@ -209,8 +210,24 @@ public class RedBlackTreeTest {
         assertThat(levels, contains(tree3Lol.toArray()));
     }
 
+    /**
+     * Node z (6) has 2 children (11, 40). z's successor y (11) is not a direct child of z.
+     * y is a grandson of z
+     *
+                        4:B
+                        / \
+                       /   \
+                      /     \
+                     /       \
+                   2:R       6:R
+                   / \      / \
+                  /   \    /   \
+                1:B   3:B 5:B  15:B
+                               / \
+                             11:R 40:R
+     */
     @Test
-    public void deleteANodeWith2Childs() {
+    public void deleteANodeWith2Children() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(1);
         tree.put(2);
@@ -224,8 +241,44 @@ public class RedBlackTreeTest {
         tree.rbtDelete(6);
     }
 
+    /**
+     * Node z (6) has only one child (40) and the child is on the right. y = 6, x = 40
+     *           4:B
+                 / \
+                /   \
+               2:B   6:B
+              / \     \
+            1:R 3:R   40:R
+     */
     @Test
-    public void deleteSucessorIsARightChild() {
+    public void deleteANodeWithOnlyOneChild() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(4);
+        tree.put(2);
+        tree.put(6);
+        tree.put(1);
+        tree.put(3);
+        tree.put(40);
+        tree.rbtDelete(6);
+//        tree.rbtDelete(40);
+    }
+
+    /**
+     * Node z (15) has 2 children (11, 40). z's successor y (40) is z's direct child. x = null
+     *                  4:B
+                        / \
+                       /   \
+                      /     \
+                     /       \
+                   2:R       6:R
+                   / \      /  \
+                  /   \    /    \
+               1:B   3:B  5:B   15:B
+                                 / \
+                               11:R 40:R
+     */
+    @Test
+    public void deleteANodeWith2ChildrenAndSuccessorIsDirectChild() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(1);
         tree.put(2);
@@ -237,6 +290,98 @@ public class RedBlackTreeTest {
         tree.put(40);
         tree.put(11);
         tree.rbtDelete(15);
+    }
+
+    // same tree as above
+    @Test
+    public void deletionCase1() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(1);
+        tree.put(2);
+        tree.put(3);
+        tree.put(4);
+        tree.put(6);
+        tree.put(5);
+        tree.put(15);
+        tree.put(40);
+        tree.put(11);
+        tree.rbtDelete(2);
+    }
+
+    /**
+     * Node z (4) has 2 children (2, 7). z's successor y (5) is z's grandson.
+     * x (6) is not null. Deletion: Case 1. x's sibling 10 is red
+     *
+                        4:B
+                        / \
+                       /   \
+                      /     \
+                     /       \
+                   2:B       7:R
+                   / \       / \
+                  /   \     /   \
+                1:R   3:R  5:B   10:B
+                            \       \
+                             6:R   20:R
+     *
+     * */
+    @Test
+    public void deleteANodeWith2ChildrenAndSuccessorIsNotDirectChildAndXIsNotNull() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(4);
+        tree.put(2);
+        tree.put(10);
+        tree.put(1);
+        tree.put(3);
+        tree.put(5);
+        tree.put(7);
+        tree.put(20);
+        tree.put(6);
+        tree.rbtDelete(4);
+    }
+
+    /**
+     * Node z (7) has 2 children (5, 10). z's successor y (10) and it's a direct child of z (z = y.p)
+     * x (20) is not null
+     *
+                    4:B
+                    / \
+                   /   \
+                  /     \
+                 /       \
+                2:B       7:R
+                / \       / \
+               /   \     /   \
+            1:R   3:R  5:B   10:B
+                        \      \
+                         6:R   20:R
+     *
+     * */
+    @Test
+    public void deleteANodeWith2ChildrenAndSuccessorIsDirectChildAndXIsNotNull() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(4);
+        tree.put(2);
+        tree.put(10);
+        tree.put(1);
+        tree.put(3);
+        tree.put(5);
+        tree.put(7);
+        tree.put(20);
+        tree.put(6);
+        tree.rbtDelete(7);
+    }
+
+    @Test
+    public void deleteRootElement() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(5);
+        tree.put(2);
+        tree.put(8);
+        tree.put(1);
+        tree.put(4);
+        tree.put(3);
+        tree.rbtDelete(5);
     }
 
 //    @Test

@@ -16,6 +16,14 @@ public class RbtNode<T extends Comparable<T>> extends BstNode {
     }
 
     @Override
+    public String toString() {
+        return "key = " + key + ", left = " + (left != null ? left.key : "null") +
+                ", right = " + (right != null ? right.key : "null") + ", parent = " +
+                (parent != null ? parent.key : "null") +
+                ", color = " + (color == RedBlackTree.BLACK ? "B" : "R");
+    }
+
+    @Override
     public String getKeyAsString() {
         return key + ":" + (color == RedBlackTree.BLACK ? "B" : "R");
     }

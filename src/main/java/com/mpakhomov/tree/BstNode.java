@@ -17,6 +17,13 @@ public class BstNode<T extends Comparable<T>> {
         this.key = key;
     }
 
+    @Override
+    public String toString() {
+        return "key = " + key + ", left = " + (left != null ? left.key : "null") +
+                ", right = " + (right != null ? right.key : "null") + ", parent = " +
+                (parent != null ? parent.key : "null");
+    }
+
     /**
      * To be overridden in subclasses. For example, in Red Black Tree we might want
      * to print key as {@code "<value>:<COLOR>"}

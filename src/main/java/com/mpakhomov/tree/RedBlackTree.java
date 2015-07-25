@@ -130,7 +130,8 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             originalColorOfY = y.color;
             x = (RbtNode<T>)y.right;
             if (parentOf(y) == z) {
-                // TODO: WTF? y is already parent of x
+                // Line below is from the book. In my implementation it's not needed,
+                // because x.parent always points to y, unless x is not null
                 //x.parent = y;
             } else {
                 rbTransplant(y, rightOf(y));
@@ -146,7 +147,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         if (originalColorOfY == BLACK) {
             rbDeleteFixUp(x);
         }
-
+        size--;
     }
 
     void rbDeleteFixUp(RbtNode<T> x) {
@@ -233,7 +234,9 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
      */
     void rbTransplant(RbtNode<T> u, RbtNode<T> v) {
         Objects.requireNonNull(u);
-        if (u == root) {
+        // both options are valid
+        if (u.parent == null) {
+//      if (u == root) {
             root = v;
         } else if (u == u.parent.left) {
             // u is a left child
@@ -242,10 +245,11 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             // u is a right child
             u.parent.right = v;
         }
-        // TODO: why it's needed?
-//        if (v != null) {
+        // in the book this assignment is unconditional, because they use an artificial sentinel Nil element
+        // i don't use Nil, so I have to check for null to avoid NPE
+        if (v != null) {
             v.parent = u.parent;
-//        }
+        }
     }
 
 
