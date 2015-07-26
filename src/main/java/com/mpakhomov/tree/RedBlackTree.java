@@ -120,9 +120,15 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
         if (z.left == null) {
             x = (RbtNode<T>)z.right;
+            if (x == null) {
+                x = new RbtNode<>(null, BLACK, z);
+            }
             rbTransplant(z, (RbtNode<T>)z.right);
         } else if (z.right == null) {
             x = (RbtNode<T>)z.left;
+            if (x == null) {
+                x = new RbtNode<>(null, BLACK, z);
+            }
             rbTransplant(z, (RbtNode<T>)z.left);
         } else {
             // find the successor of z
@@ -130,9 +136,10 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             originalColorOfY = y.color;
             x = (RbtNode<T>)y.right;
             if (parentOf(y) == z) {
-                // Line below is from the book. In my implementation it's not needed,
-                // because x.parent always points to y, unless x is not null
-                //x.parent = y;
+                if (x == null) {
+                    x = new RbtNode<>(null, BLACK);
+                    x.parent = y;
+                }
             } else {
                 rbTransplant(y, rightOf(y));
                 y.right = z.right;
@@ -156,13 +163,8 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
      * @param x a child of replacement node y
      */
     void rbDeleteFixUp(RbtNode<T> x) {
-        if (x == null) {
-            // nothing to fix
-            return;
-        }
-
         while (x != root && colorOf(x) == BLACK) {
-
+            System.out.println(this.size + " " + keyOf(x));
             if (x == leftOf(parentOf(x))) {
                 // x is the left child
                 RbtNode<T> w = rightOf(parentOf(x));
@@ -310,8 +312,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             // u is a right child
             u.parent.right = v;
         }
-        // in the book this assignment is unconditional, because they use an artificial sentinel Nil element
-        // i don't use Nil, so I have to check for null to avoid NPE
         if (v != null) {
             v.parent = u.parent;
         }
@@ -343,5 +343,9 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
     static <T extends Comparable<T>> RbtNode<T> rightOf(RbtNode<T> p) {
         return (p == null) ? null : (RbtNode<T>) p.right;
+    }
+
+    static <T extends Comparable<T>> T keyOf(RbtNode<T> p) {
+        return (p == null) ? null : (T) p.key;
     }
 }

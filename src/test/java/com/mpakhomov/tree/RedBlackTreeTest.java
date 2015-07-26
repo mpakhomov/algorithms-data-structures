@@ -33,8 +33,8 @@ public class RedBlackTreeTest {
            / \         \
           /   \         \
        1:B    7:B       15:R
-       / \
-     5:R  8:R
+              / \
+            5:R  8:R
 
        After insertion:
 
@@ -130,7 +130,7 @@ public class RedBlackTreeTest {
 
 /**
 *
-*   tree 3 before insertion
+*   tree 3 before insertion.
 
             2:B
             / \
@@ -144,7 +144,7 @@ public class RedBlackTreeTest {
                     / \
                   5:R 7:R
 
-        tree3 after insertion
+        tree3 after insertion.
 
                     4:B
                     / \
@@ -264,6 +264,26 @@ public class RedBlackTreeTest {
     }
 
     /**
+     * Node z (4) has 2 children (2, 6) and the child is on the right. y = 6, x = null
+     *           4:B
+                 / \
+                /   \
+              2:B   6:B
+              / \
+            1:R 3:R
+     */
+    @Test
+    public void deleteANodeXisNull() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(4);
+        tree.put(2);
+        tree.put(6);
+        tree.put(1);
+        tree.put(3);
+        tree.rbtDelete(4);
+    }
+
+    /**
      * Node z (15) has 2 children (11, 40). z's successor y (40) is z's direct child. x = null
      *                  4:B
                         / \
@@ -294,7 +314,7 @@ public class RedBlackTreeTest {
 
     // same tree as above
     @Test
-    public void deletionCase1() {
+    public void deletionCase2() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(1);
         tree.put(2);
@@ -310,7 +330,7 @@ public class RedBlackTreeTest {
 
     /**
      * Node z (4) has 2 children (2, 7). z's successor y (5) is z's grandson.
-     * x (6) is not null. Deletion: Case 1. x's sibling 10 is red
+     * x (6) is not null.
      *
                         4:B
                         / \
@@ -373,7 +393,7 @@ public class RedBlackTreeTest {
     }
 
     @Test
-    public void deleteRootElement() {
+    public void deleteRootElementCase1() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(5);
         tree.put(2);
@@ -383,6 +403,38 @@ public class RedBlackTreeTest {
         tree.put(3);
         tree.rbtDelete(5);
     }
+
+    @Test
+    public void deleteXisNullCase2() {
+//        treeFromTheBook.rbtDelete(11);
+        tree3.put(8);
+        tree3.rbtDelete(2);
+    }
+
+    @Test
+    public void treeFromTheBookDelete2() {
+        tree2.rbtDelete(18);
+    }
+
+    @Test
+    public void randomTreeDelete() {
+        Random random = new Random();
+        List<Integer> randomIntegers = new ArrayList<>(100);
+        RedBlackTree tree = new RedBlackTree();
+        for (int i = 0; i < 100; i++) {
+            int randomInt = random.nextInt(10_000);
+            randomIntegers.add(i);
+            tree.put(i);
+        }
+        Collections.shuffle(randomIntegers);
+        ArrayDeque<Integer> queue = new ArrayDeque<>(100);
+        queue.addAll(randomIntegers);
+        while (queue.size() >= 3) {
+            int randomElement = queue.poll();
+            tree.rbtDelete(randomElement);
+        }
+    }
+
 
 //    @Test
 //    public void testDeleteFromEmptyTree() {

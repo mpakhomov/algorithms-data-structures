@@ -15,6 +15,13 @@ public class RbtNode<T extends Comparable<T>> extends BstNode {
         this.color = color;
     }
 
+    public RbtNode(T key, boolean color, RbtNode<T> parent) {
+        super(key);
+        this.color = color;
+        this.parent = parent;
+    }
+
+
     @Override
     public String toString() {
         return "key = " + key + ", left = " + (left != null ? left.key : "null") +
