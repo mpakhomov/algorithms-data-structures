@@ -150,8 +150,73 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         size--;
     }
 
+    /**
+     * restore Red Black Tree properties after deletion
+     *
+     * @param x a child of replacement node y
+     */
     void rbDeleteFixUp(RbtNode<T> x) {
+        if (x == null) {
+            // nothing to fix
+            return;
+        }
 
+        while (x != root && colorOf(x) == BLACK) {
+
+            if (x == leftOf(parentOf(x))) {
+                // x is the left child
+                RbtNode<T> w = rightOf(parentOf(x));
+                if (colorOf(w) == RED) {
+                    setColor(w, BLACK);                 // case 1
+                    setColor(parentOf(x), RED);         // case 1
+                    rotateLeft(parentOf(x));            // case 1
+                    w = rightOf(parentOf(x));           // case 1
+                } else if (colorOf(leftOf(w)) == BLACK && colorOf(rightOf(w)) == BLACK) {
+                    setColor(w, RED);                   // case 2
+                    x = parentOf(x);                    // case 2
+                } else {
+                    if (colorOf(rightOf(w)) == BLACK) {
+                        setColor(leftOf(w), BLACK);     // case 3
+                        setColor(w, RED);               // case 3
+                        rotateRight(w);                 // case 3
+                        w = rightOf(parentOf(x));       // case 3
+                    } // end of if (colorOf(rightOf(w)) == BLACK) {
+                    setColor(w, colorOf(parentOf(x)));
+                    setColor(parentOf(x), BLACK);       // case 4
+                    setColor(rightOf(w), BLACK);        // case 4
+                    rotateLeft(parentOf(x));            // case 4
+                    x = (RbtNode<T>) root;              // case 4
+                }
+
+            } else { // else for if (x == leftOf(parentOf(x))) {
+                // x is the right child
+                RbtNode<T> w = leftOf(parentOf(x));
+                if (colorOf(w) == RED) {
+                    setColor(w, BLACK);                 // case 1
+                    setColor(parentOf(x), RED);         // case 1
+                    rotateRight(parentOf(x));           // case 1
+                    w = leftOf(parentOf(x));            // case 1
+                } else if (colorOf(leftOf(w)) == BLACK && colorOf(rightOf(w)) == BLACK) {
+                    setColor(w, RED);                   // case 2
+                    x = parentOf(x);                    // case 2
+                } else {
+                    if (colorOf(leftOf(w)) == BLACK) {
+                        setColor(rightOf(w), BLACK);    // case 3
+                        setColor(w, RED);               // case 3
+                        rotateLeft(w);                  // case 3
+                        w = leftOf(parentOf(x));        // case 3
+                    } // end of if (colorOf(leftOf(w)) == BLACK) {
+                    setColor(w, colorOf(parentOf(x)));
+                    setColor(parentOf(x), BLACK);       // case 4
+                    setColor(leftOf(w), BLACK);         // case 4
+                    rotateRight(parentOf(x));           // case 4
+                    x = (RbtNode<T>) root;              // case 4
+                }
+
+            } // end of if (x == leftOf(parentOf(x))) {
+
+        }
+        x.color = BLACK;
     }
 
 
