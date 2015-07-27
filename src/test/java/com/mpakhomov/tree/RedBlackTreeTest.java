@@ -429,10 +429,11 @@ public class RedBlackTreeTest {
         Collections.shuffle(randomIntegers);
         ArrayDeque<Integer> queue = new ArrayDeque<>(100);
         queue.addAll(randomIntegers);
-        while (queue.size() >= 3) {
+        while (queue.size() >= 4) {
             int randomElement = queue.poll();
             tree.rbtDelete(randomElement);
         }
+        BTreePrinter.printNode(tree.getRoot());
     }
 
 

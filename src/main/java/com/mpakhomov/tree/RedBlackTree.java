@@ -121,26 +121,30 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         if (z.left == null) {
             x = (RbtNode<T>)z.right;
             if (x == null) {
-                x = new RbtNode<>(null, BLACK, z);
+                x = new RbtNode<>(null, BLACK, parentOf(z));
             }
-            rbTransplant(z, (RbtNode<T>)z.right);
+            rbTransplant(z, (RbtNode<T>) z.right);
         } else if (z.right == null) {
             x = (RbtNode<T>)z.left;
             if (x == null) {
-                x = new RbtNode<>(null, BLACK, z);
+                x = new RbtNode<>(null, BLACK, parentOf(z));
             }
             rbTransplant(z, (RbtNode<T>)z.left);
         } else {
             // find the successor of z
             y = (RbtNode<T>)treeMinimum(z.right);
             originalColorOfY = y.color;
-            x = (RbtNode<T>)y.right;
-            if (parentOf(y) == z) {
-                if (x == null) {
-                    x = new RbtNode<>(null, BLACK);
-                    x.parent = y;
-                }
+            if (y.right == null) {
+                x = new RbtNode<>(null, BLACK);
             } else {
+                x = (RbtNode<T>) y.right;
+            }
+            if (parentOf(y) == z) {
+                x.parent = y;
+            } else {
+                if (y.right == null) {
+                    x.parent = y.parent;
+                }
                 rbTransplant(y, rightOf(y));
                 y.right = z.right;
                 y.right.parent = y;
@@ -219,6 +223,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
         }
         x.color = BLACK;
+//        setColor(x, BLACK);
     }
 
 
@@ -301,6 +306,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
      */
     void rbTransplant(RbtNode<T> u, RbtNode<T> v) {
         Objects.requireNonNull(u);
+//        Objects.requireNonNull(v);
         // both options are valid
         if (u.parent == null) {
 //      if (u == root) {
@@ -314,6 +320,8 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         }
         if (v != null) {
             v.parent = u.parent;
+        } else {
+            System.out.println("v = null");
         }
     }
 
