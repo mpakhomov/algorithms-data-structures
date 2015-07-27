@@ -176,6 +176,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
                     setColor(w, BLACK);                 // case 1
                     setColor(parentOf(x), RED);         // case 1
                     rotateLeft(parentOf(x));            // case 1
+                    // TODO: w is assigned but never used
                     w = rightOf(parentOf(x));           // case 1
                 } else if (colorOf(leftOf(w)) == BLACK && colorOf(rightOf(w)) == BLACK) {
                     setColor(w, RED);                   // case 2
@@ -201,6 +202,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
                     setColor(w, BLACK);                 // case 1
                     setColor(parentOf(x), RED);         // case 1
                     rotateRight(parentOf(x));           // case 1
+                    // TODO: w is assigned but never used
                     w = leftOf(parentOf(x));            // case 1
                 } else if (colorOf(leftOf(w)) == BLACK && colorOf(rightOf(w)) == BLACK) {
                     setColor(w, RED);                   // case 2
@@ -223,7 +225,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
         }
         x.color = BLACK;
-//        setColor(x, BLACK);
     }
 
 

@@ -312,7 +312,22 @@ public class RedBlackTreeTest {
         tree.rbtDelete(15);
     }
 
-    // same tree as above
+
+    /**
+     * Node z (2) has 2 children (1, 3). z's successor y (3) is z's direct child. x = null
+     *                  4:B
+                        / \
+                       /   \
+                      /     \
+                     /       \
+                    2:R       6:R
+                    / \      /  \
+                   /   \    /    \
+                1:B   3:B  5:B   15:B
+                                 / \
+                                11:R 40:R
+     */
+
     @Test
     public void deletionCase2() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
@@ -392,6 +407,21 @@ public class RedBlackTreeTest {
         tree.rbtDelete(7);
     }
 
+    /**
+     *  z = 5, z has 2 children (2, 8), y = 8. y is a son of z. x = null
+     *
+                    5:B
+                    / \
+                   /   \
+                  /     \
+                 /       \
+               2:R       8:B
+               / \
+              /   \
+            1:B   4:B
+                   /
+                3:R
+     */
     @Test
     public void deleteRootElementCase1() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
@@ -404,6 +434,21 @@ public class RedBlackTreeTest {
         tree.rbtDelete(5);
     }
 
+/**
+ *   z = 2, z has 2 children (1, 3), y = 3. y is a son of z. x = null
+ *
+                4:B
+                / \
+               /   \
+              /     \
+             /       \
+           2:R       6:R
+          / \        / \
+         /   \      /   \
+       1:B   3:B   5:B  7:B
+                         \
+                         8:R
+ */
     @Test
     public void deleteXisNullCase2() {
 //        treeFromTheBook.rbtDelete(11);
@@ -411,24 +456,41 @@ public class RedBlackTreeTest {
         tree3.rbtDelete(2);
     }
 
+/**
+ * z = 18, 2 children (10, 22). y = 22, direct child. x = 26
+ *
+                  7:B
+                  / \
+                 /   \
+                /     \
+               /       \
+             3:B       18:R
+                        / \
+                       /   \
+                    10:B   22:B
+                    / \     \
+                 8:R 11:R   26:R
+*/
     @Test
-    public void treeFromTheBookDelete2() {
+    public void tree2Delete18() {
         tree2.rbtDelete(18);
     }
 
     @Test
     public void randomTreeDelete() {
         Random random = new Random();
-        List<Integer> randomIntegers = new ArrayList<>(100);
+        final int size = 20;
+        List<Integer> randomIntegers = new ArrayList<>(size);
         RedBlackTree tree = new RedBlackTree();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < size; i++) {
             int randomInt = random.nextInt(10_000);
             randomIntegers.add(i);
             tree.put(i);
         }
         Collections.shuffle(randomIntegers);
-        ArrayDeque<Integer> queue = new ArrayDeque<>(100);
+        ArrayDeque<Integer> queue = new ArrayDeque<>(size);
         queue.addAll(randomIntegers);
+        BTreePrinter.printNode(tree.getRoot());
         while (queue.size() >= 4) {
             int randomElement = queue.poll();
             tree.rbtDelete(randomElement);
