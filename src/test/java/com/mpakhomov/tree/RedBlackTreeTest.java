@@ -241,6 +241,14 @@ public class RedBlackTreeTest {
         tree.put(40);
         tree.put(11);
         tree.rbtDelete(6);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("4:B"));
+        treeLol.add(Arrays.asList("2:R", "11:R"));
+        treeLol.add(Arrays.asList("1:B", "3:B", "5:B", "15:B"));
+        treeLol.add(Arrays.asList("40:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(8));
     }
 
     /**
@@ -275,7 +283,7 @@ public class RedBlackTreeTest {
             1:R 3:R
      */
     @Test
-    public void deleteANodeXisNull() {
+    public void deleteANodeXisNullCase4() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(4);
         tree.put(2);
@@ -283,6 +291,13 @@ public class RedBlackTreeTest {
         tree.put(1);
         tree.put(3);
         tree.rbtDelete(4);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("2:B"));
+        treeLol.add(Arrays.asList("1:B", "6:B"));
+        treeLol.add(Arrays.asList("3:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(4));
     }
 
     /**
@@ -312,6 +327,14 @@ public class RedBlackTreeTest {
         tree.put(40);
         tree.put(11);
         tree.rbtDelete(15);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("4:B"));
+        treeLol.add(Arrays.asList("2:R", "6:R"));
+        treeLol.add(Arrays.asList("1:B", "3:B", "5:B", "40:B"));
+        treeLol.add(Arrays.asList("11:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(8));
     }
 
 
@@ -343,6 +366,14 @@ public class RedBlackTreeTest {
         tree.put(40);
         tree.put(11);
         tree.rbtDelete(2);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("4:B"));
+        treeLol.add(Arrays.asList("3:B", "6:R"));
+        treeLol.add(Arrays.asList("1:R", "5:B", "15:B"));
+        treeLol.add(Arrays.asList("11:R", "40:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(8));
     }
 
     /**
@@ -375,6 +406,14 @@ public class RedBlackTreeTest {
         tree.put(20);
         tree.put(6);
         tree.rbtDelete(4);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("5:B"));
+        treeLol.add(Arrays.asList("2:B", "7:R"));
+        treeLol.add(Arrays.asList("1:R", "3:R", "6:B", "10:B"));
+        treeLol.add(Arrays.asList("20:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(8));
     }
 
     /**
@@ -407,6 +446,14 @@ public class RedBlackTreeTest {
         tree.put(20);
         tree.put(6);
         tree.rbtDelete(7);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("4:B"));
+        treeLol.add(Arrays.asList("2:B", "10:R"));
+        treeLol.add(Arrays.asList("1:R", "3:R", "5:B", "20:B"));
+        treeLol.add(Arrays.asList("6:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(8));
     }
 
     /**

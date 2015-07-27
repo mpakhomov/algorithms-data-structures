@@ -114,8 +114,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
     }
 
     public void rbtDelete(RbtNode<T> p) {
-        size--;
-
         // If strictly internal, copy successor's element to p and then make p
         // point to successor.
         if (p.left != null && p.right != null) {
@@ -129,16 +127,11 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
         if (replacement != null) {
             // Link replacement to parent
-            replacement.parent = p.parent;
-            if (p.parent == null)
-                root = replacement;
-            else if (p == p.parent.left)
-                p.parent.left  = replacement;
-            else
-                p.parent.right = replacement;
+            rbTransplant(p, replacement);
 
             // Null out links so they are OK to use by fixAfterDeletion.
-            p.left = p.right = p.parent = null;
+            // MP: it's not needed, but let's help GC
+//            p.left = p.right = p.parent = null;
 
             // Fix replacement
             if (p.color == BLACK)
@@ -157,6 +150,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
                 p.parent = null;
             }
         }
+        size--;
     }
 
     /**
@@ -166,15 +160,9 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
      */
     void rbDeleteFixUp(RbtNode<T> x) {
         while (x != root && colorOf(x) == BLACK) {
-            System.out.println(this.size + " " + keyOf(x));
             if (x == leftOf(parentOf(x))) {
+
                 // x is the left child
-
-                // unlink x from its parent
-//                if (x.key == null) {
-//                    x.parent.left = null;
-//                }
-
                 RbtNode<T> w = rightOf(parentOf(x));
                 if (colorOf(w) == RED) {
                     setColor(w, BLACK);                 // case 1
@@ -202,11 +190,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
             } else { // else for if (x == leftOf(parentOf(x))) {
                 // x is the right child
-
-                // unlink x from its parent
-//                if (x.key == null) {
-//                    x.parent.right = null;
-//                }
 
                 RbtNode<T> w = leftOf(parentOf(x));
                 if (colorOf(w) == RED) {
@@ -236,7 +219,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             } // end of if (x == leftOf(parentOf(x))) {
 
         }
-        x.color = BLACK;
+        setColor(x, BLACK);
     }
 
 
@@ -336,9 +319,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         } else {
             // u is a right child
             u.parent.right = v;
-        }
-        if (v == null) {
-            System.out.println("v = null; u = " + u + ", v = " + v);
         }
         v.parent = u.parent;
     }
