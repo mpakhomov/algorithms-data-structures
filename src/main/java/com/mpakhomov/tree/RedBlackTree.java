@@ -118,16 +118,33 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         RbtNode<T> y = z, x = null;
         boolean originalColorOfY = y.color;
 
-        if (z.left == null) {
+        if (z.left == null && z.right == null) {
+            // from JDK: No children. Use self as phantom replacement and unlink.
+            if (z.color == BLACK) {
+               rbDeleteFixUp(z);
+            }
+
+            if (z.parent !=  null) {
+                if (z == z.parent.left) {
+                    z.parent.left = null;
+                } else if (z == z.parent.right)
+                    z.parent.right = null;
+                z.parent = null;
+            }
+            size--;
+            return;
+        } else if (z.left == null) {
             x = (RbtNode<T>)z.right;
             if (x == null) {
                 x = new RbtNode<>(null, BLACK, parentOf(z));
+                z.right = x;
             }
             rbTransplant(z, (RbtNode<T>) z.right);
         } else if (z.right == null) {
             x = (RbtNode<T>)z.left;
             if (x == null) {
                 x = new RbtNode<>(null, BLACK, parentOf(z));
+                z.left = x;
             }
             rbTransplant(z, (RbtNode<T>)z.left);
         } else {
@@ -135,16 +152,12 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             y = (RbtNode<T>)treeMinimum(z.right);
             originalColorOfY = y.color;
             if (y.right == null) {
-                x = new RbtNode<>(null, BLACK);
-            } else {
-                x = (RbtNode<T>) y.right;
+                y.right = new RbtNode<>(null, BLACK);
             }
+            x = (RbtNode<T>) y.right;
             if (parentOf(y) == z) {
                 x.parent = y;
             } else {
-                if (y.right == null) {
-                    x.parent = y.parent;
-                }
                 rbTransplant(y, rightOf(y));
                 y.right = z.right;
                 y.right.parent = y;
@@ -171,14 +184,21 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             System.out.println(this.size + " " + keyOf(x));
             if (x == leftOf(parentOf(x))) {
                 // x is the left child
+
+                // unlink x from its parent
+                if (x.key == null) {
+                    x.parent.left = null;
+                }
+
                 RbtNode<T> w = rightOf(parentOf(x));
                 if (colorOf(w) == RED) {
                     setColor(w, BLACK);                 // case 1
                     setColor(parentOf(x), RED);         // case 1
                     rotateLeft(parentOf(x));            // case 1
-                    // TODO: w is assigned but never used
                     w = rightOf(parentOf(x));           // case 1
-                } else if (colorOf(leftOf(w)) == BLACK && colorOf(rightOf(w)) == BLACK) {
+                }
+
+                if (colorOf(leftOf(w)) == BLACK && colorOf(rightOf(w)) == BLACK) {
                     setColor(w, RED);                   // case 2
                     x = parentOf(x);                    // case 2
                 } else {
@@ -197,14 +217,21 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
             } else { // else for if (x == leftOf(parentOf(x))) {
                 // x is the right child
+
+                // unlink x from its parent
+                if (x.key == null) {
+                    x.parent.right = null;
+                }
+
                 RbtNode<T> w = leftOf(parentOf(x));
                 if (colorOf(w) == RED) {
                     setColor(w, BLACK);                 // case 1
                     setColor(parentOf(x), RED);         // case 1
                     rotateRight(parentOf(x));           // case 1
-                    // TODO: w is assigned but never used
                     w = leftOf(parentOf(x));            // case 1
-                } else if (colorOf(leftOf(w)) == BLACK && colorOf(rightOf(w)) == BLACK) {
+                }
+
+                if (colorOf(leftOf(w)) == BLACK && colorOf(rightOf(w)) == BLACK) {
                     setColor(w, RED);                   // case 2
                     x = parentOf(x);                    // case 2
                 } else {
@@ -245,7 +272,10 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
      * @param x     a tree node (parent) to run the rotation on
      */
     void rotateLeft(BstNode<T> x) {
+        Objects.requireNonNull(x);
         BstNode<T> y = x.right; // set y, we want to exchange x and its right child y
+        Objects.requireNonNull(y);
+//        Objects.requireNonNull(y.key);
         x.right = y.left; // turn y's left subtree into x's right subtree
         if (y.left != null) {
             y.left.parent = x;
@@ -279,7 +309,10 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
      * @param x     a tree node (parent) to run the rotation on
      */
     void rotateRight(BstNode<T> x) {
+        Objects.requireNonNull(x);
         BstNode<T> y = x.left; // set y
+        Objects.requireNonNull(y);
+//        Objects.requireNonNull(y.key);
         x.left = y.right; // turn y's right subtree into x's left subtree
         if (y.right != null) {
             y.right.parent = x;
@@ -307,7 +340,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
      */
     void rbTransplant(RbtNode<T> u, RbtNode<T> v) {
         Objects.requireNonNull(u);
-//        Objects.requireNonNull(v);
+        Objects.requireNonNull(v);
         // both options are valid
         if (u.parent == null) {
 //      if (u == root) {
@@ -319,11 +352,10 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             // u is a right child
             u.parent.right = v;
         }
-        if (v != null) {
-            v.parent = u.parent;
-        } else {
-            System.out.println("v = null");
+        if (v == null) {
+            System.out.println("v = null; u = " + u + ", v = " + v);
         }
+        v.parent = u.parent;
     }
 
 

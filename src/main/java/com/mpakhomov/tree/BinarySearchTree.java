@@ -99,7 +99,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     public BstNode<T> search(T key) {
         Objects.requireNonNull(key);
         BstNode<T> x = root;
-        while (x != null && key.compareTo(x.key) != 0) {
+        while (x != null && x.key != null && key.compareTo(x.key) != 0) {
             if (key.compareTo(x.key) < 0) {
                 // search in the left subtree
                 x = x.left;

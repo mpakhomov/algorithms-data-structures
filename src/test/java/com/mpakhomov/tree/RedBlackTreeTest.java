@@ -2,6 +2,8 @@ package com.mpakhomov.tree;
 
 import org.junit.*;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -477,9 +479,36 @@ public class RedBlackTreeTest {
     }
 
     @Test
+    public void tree0to19Delete() {
+        RedBlackTree tree = new RedBlackTree();
+        for (int i = 0; i < 20; i++) {
+            tree.put(i);
+        }
+        BTreePrinter.printNode(tree.getRoot());
+        tree.rbtDelete(4);
+        tree.rbtDelete(7);
+        tree.rbtDelete(6);
+        tree.rbtDelete(14);
+        tree.rbtDelete(8);
+        tree.rbtDelete(19);
+        tree.rbtDelete(0);
+        tree.rbtDelete(1);
+        tree.rbtDelete(13);
+        tree.rbtDelete(5);
+        tree.rbtDelete(2);
+        tree.rbtDelete(18);
+        tree.rbtDelete(17);
+        tree.rbtDelete(9);
+        tree.rbtDelete(15);
+        tree.rbtDelete(16);
+        tree.rbtDelete(11);
+        BTreePrinter.printNode(tree.getRoot());
+    }
+
+    @Test
     public void randomTreeDelete() {
         Random random = new Random();
-        final int size = 20;
+        final int size = 100;
         List<Integer> randomIntegers = new ArrayList<>(size);
         RedBlackTree tree = new RedBlackTree();
         for (int i = 0; i < size; i++) {
@@ -487,12 +516,18 @@ public class RedBlackTreeTest {
             randomIntegers.add(i);
             tree.put(i);
         }
+        System.out.println(
+            randomIntegers.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(" ")));
+
         Collections.shuffle(randomIntegers);
         ArrayDeque<Integer> queue = new ArrayDeque<>(size);
         queue.addAll(randomIntegers);
-        BTreePrinter.printNode(tree.getRoot());
+//        BTreePrinter.printNode(tree.getRoot());
         while (queue.size() >= 4) {
             int randomElement = queue.poll();
+            System.out.println("delete " + randomElement);
             tree.rbtDelete(randomElement);
         }
         BTreePrinter.printNode(tree.getRoot());
