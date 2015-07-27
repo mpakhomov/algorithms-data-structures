@@ -113,65 +113,50 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
         }
     }
 
-    public void rbtDelete(RbtNode<T> z) {
-        Objects.requireNonNull(z);
-        RbtNode<T> y = z, x = null;
-        boolean originalColorOfY = y.color;
-
-        if (z.left == null && z.right == null) {
-            // from JDK: No children. Use self as phantom replacement and unlink.
-            if (z.color == BLACK) {
-               rbDeleteFixUp(z);
-            }
-
-            if (z.parent !=  null) {
-                if (z == z.parent.left) {
-                    z.parent.left = null;
-                } else if (z == z.parent.right)
-                    z.parent.right = null;
-                z.parent = null;
-            }
-            size--;
-            return;
-        } else if (z.left == null) {
-            x = (RbtNode<T>)z.right;
-            if (x == null) {
-                x = new RbtNode<>(null, BLACK, parentOf(z));
-                z.right = x;
-            }
-            rbTransplant(z, (RbtNode<T>) z.right);
-        } else if (z.right == null) {
-            x = (RbtNode<T>)z.left;
-            if (x == null) {
-                x = new RbtNode<>(null, BLACK, parentOf(z));
-                z.left = x;
-            }
-            rbTransplant(z, (RbtNode<T>)z.left);
-        } else {
-            // find the successor of z
-            y = (RbtNode<T>)treeMinimum(z.right);
-            originalColorOfY = y.color;
-            if (y.right == null) {
-                y.right = new RbtNode<>(null, BLACK);
-            }
-            x = (RbtNode<T>) y.right;
-            if (parentOf(y) == z) {
-                x.parent = y;
-            } else {
-                rbTransplant(y, rightOf(y));
-                y.right = z.right;
-                y.right.parent = y;
-            }
-            rbTransplant(z, y);
-            y.left = z.left;
-            y.left.parent = y;
-            y.color = z.color;
-        }
-
-        if (originalColorOfY == BLACK) {
-            rbDeleteFixUp(x);
-        }
+    public void rbtDelete(RbtNode<T> p) {
         size--;
+
+        // If strictly internal, copy successor's element to p and then make p
+        // point to successor.
+        if (p.left != null && p.right != null) {
+            RbtNode<T> s = (RbtNode<T>)successor(p);
+            p.key = s.key;
+            p = s;
+        } // p has 2 children
+
+        // Start fixup at replacement node, if it exists.
+        RbtNode<T> replacement = (RbtNode<T>)(p.left != null ? p.left : p.right);
+
+        if (replacement != null) {
+            // Link replacement to parent
+            replacement.parent = p.parent;
+            if (p.parent == null)
+                root = replacement;
+            else if (p == p.parent.left)
+                p.parent.left  = replacement;
+            else
+                p.parent.right = replacement;
+
+            // Null out links so they are OK to use by fixAfterDeletion.
+            p.left = p.right = p.parent = null;
+
+            // Fix replacement
+            if (p.color == BLACK)
+                rbDeleteFixUp(replacement);
+        } else if (p.parent == null) { // return if we are the only node.
+            root = null;
+        } else { //  No children. Use self as phantom replacement and unlink.
+            if (p.color == BLACK)
+                rbDeleteFixUp(p);
+
+            if (p.parent != null) {
+                if (p == p.parent.left)
+                    p.parent.left = null;
+                else if (p == p.parent.right)
+                    p.parent.right = null;
+                p.parent = null;
+            }
+        }
     }
 
     /**
@@ -186,9 +171,9 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
                 // x is the left child
 
                 // unlink x from its parent
-                if (x.key == null) {
-                    x.parent.left = null;
-                }
+//                if (x.key == null) {
+//                    x.parent.left = null;
+//                }
 
                 RbtNode<T> w = rightOf(parentOf(x));
                 if (colorOf(w) == RED) {
@@ -219,9 +204,9 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
                 // x is the right child
 
                 // unlink x from its parent
-                if (x.key == null) {
-                    x.parent.right = null;
-                }
+//                if (x.key == null) {
+//                    x.parent.right = null;
+//                }
 
                 RbtNode<T> w = leftOf(parentOf(x));
                 if (colorOf(w) == RED) {
