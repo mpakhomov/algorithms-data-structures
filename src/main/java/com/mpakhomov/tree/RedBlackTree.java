@@ -103,17 +103,23 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
 
 
     public boolean rbtDelete(T key) {
-        //return super.delete(key);
         RbtNode<T> node = (RbtNode)search(key);
         if (node != null) {
-            rbtDelete((RbtNode)node);
+            rbtDelete((RbtNode) node);
             return true;
         } else {
             return false;
         }
     }
 
-    public void rbtDelete(RbtNode<T> p) {
+    void rbtDelete(RbtNode<T> p) {
+        if (size == 1 && p == root) {
+            // we are the only mode
+            root = null;
+            size--;
+            return;
+        }
+
         // If strictly internal, copy successor's element to p and then make p
         // point to successor.
         if (p.left != null && p.right != null) {
@@ -129,28 +135,29 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
             // Link replacement to parent
             rbTransplant(p, replacement);
 
-            // Null out links so they are OK to use by fixAfterDeletion.
-            // MP: it's not needed, but let's help GC
-//            p.left = p.right = p.parent = null;
-
             // Fix replacement
-            if (p.color == BLACK)
+            if (p.color == BLACK) {
                 rbDeleteFixUp(replacement);
-        } else if (p.parent == null) { // return if we are the only node.
-            root = null;
-        } else { //  No children. Use self as phantom replacement and unlink.
-            if (p.color == BLACK)
-                rbDeleteFixUp(p);
-
-            if (p.parent != null) {
-                if (p == p.parent.left)
-                    p.parent.left = null;
-                else if (p == p.parent.right)
-                    p.parent.right = null;
-                p.parent = null;
             }
+        } else {
+            //  No children. Use self as phantom replacement and unlink.
+            if (p.color == BLACK) {
+                rbDeleteFixUp(p);
+            }
+            unlinkFromParentAndNullify(p);
         }
         size--;
+    }
+
+    private void unlinkFromParentAndNullify(RbtNode<T> p) {
+        if (p.parent != null) {
+            if (p == p.parent.left) {
+                p.parent.left = null;
+            } else if (p == p.parent.right) {
+                p.parent.right = null;
+            }
+            p.parent = null;
+        }
     }
 
     /**

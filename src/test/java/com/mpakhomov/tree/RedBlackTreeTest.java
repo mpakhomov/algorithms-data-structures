@@ -472,7 +472,7 @@ public class RedBlackTreeTest {
                 3:R
      */
     @Test
-    public void deleteRootElementCase1() {
+    public void deleteRootElementCase1Case4() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(5);
         tree.put(2);
@@ -481,6 +481,13 @@ public class RedBlackTreeTest {
         tree.put(4);
         tree.put(3);
         tree.rbtDelete(5);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("2:B"));
+        treeLol.add(Arrays.asList("1:B", "4:R"));
+        treeLol.add(Arrays.asList("3:B", "8:B"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(5));
     }
 
 /**
@@ -499,14 +506,21 @@ public class RedBlackTreeTest {
                          8:R
  */
     @Test
-    public void deleteXisNullCase2() {
-//        treeFromTheBook.rbtDelete(11);
+    public void delete2ChildXisNullCase2() {
         tree3.put(8);
         tree3.rbtDelete(2);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("4:B"));
+        treeLol.add(Arrays.asList("3:B", "6:R"));
+        treeLol.add(Arrays.asList("1:R", "5:B", "7:B"));
+        treeLol.add(Arrays.asList("8:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree3.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree3.getSize(), equalTo(7));
     }
 
 /**
- * z = 18, 2 children (10, 22). y = 22, direct child. x = 26
+ * z = 18, 2 children (10, 22). y = 22, direct child. x = 26. x is red
  *
                   7:B
                   / \
@@ -521,8 +535,40 @@ public class RedBlackTreeTest {
                  8:R 11:R   26:R
 */
     @Test
-    public void tree2Delete18() {
+    public void delete2ChildXIsNotNullXRed() {
         tree2.rbtDelete(18);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("7:B"));
+        treeLol.add(Arrays.asList("3:B", "22:R"));
+        treeLol.add(Arrays.asList("10:B", "26:B"));
+        treeLol.add(Arrays.asList("8:R", "11:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree2.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree2.getSize(), equalTo(7));
+    }
+
+    @Test
+    public void deletionFromTreeWithOneElement() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(1);
+        tree.rbtDelete(1);
+        assertThat(tree.getSize(), equalTo(0));
+        assertThat(tree.getRoot(), is(nullValue()));
+    }
+
+    @Test
+    public void deletionFromTreeWithTwoElements() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(1);
+        tree.put(2);
+        boolean result = tree.rbtDelete(1);
+        assertThat(result, is(true));
+        assertThat(tree.getSize(), equalTo(1));
+        RbtNode<Integer> root = (RbtNode<Integer>)tree.getRoot();
+        assertThat(root.left, is(nullValue()));
+        assertThat(root.right, is(nullValue()));
+        assertThat(root.parent, is(nullValue()));
+        assertThat(root.key, equalTo(2));
     }
 
     @Test
@@ -581,15 +627,16 @@ public class RedBlackTreeTest {
     }
 
 
-//    @Test
-//    public void testDeleteFromEmptyTree() {
-//        RedBlackTree<Integer> tree = new RedBlackTree<>();
-//        tree.rbtDelete(1);
-//    }
-//
-//    @Test(expected = NullPointerException.class)
-//    public void testDeleteNullFromTree() {
-//        Integer nullInteger = null;
-//        tree2.rbtDelete(nullInteger);
-//    }
+    @Test
+    public void testDeleteFromEmptyTree() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        boolean result = tree.rbtDelete(1);
+        assertThat(result, is(false));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testDeleteNullFromTree() {
+        Integer nullInteger = null;
+        tree2.rbtDelete(nullInteger);
+    }
 }
