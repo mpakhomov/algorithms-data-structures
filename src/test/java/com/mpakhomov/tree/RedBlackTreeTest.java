@@ -213,8 +213,8 @@ public class RedBlackTreeTest {
     }
 
     /**
-     * Node z (6) has 2 children (11, 40). z's successor y (11) is not a direct child of z.
-     * y is a grandson of z
+     * Node z (6) has 2 children (5, 15). z's successor y (11) is not a direct child of z.
+     * y is a grandson of z. x = null.
      *
                         4:B
                         / \
@@ -229,7 +229,7 @@ public class RedBlackTreeTest {
                              11:R 40:R
      */
     @Test
-    public void deleteANodeWith2Children() {
+    public void deleteANodeWith2ChildrenXisNullRed() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(1);
         tree.put(2);
@@ -253,6 +253,8 @@ public class RedBlackTreeTest {
 
     /**
      * Node z (6) has only one child (40) and the child is on the right. y = 6, x = 40
+     * 6 will be replaced with 40 and recolored to BLACK
+     *
      *           4:B
                  / \
                 /   \
@@ -261,7 +263,7 @@ public class RedBlackTreeTest {
             1:R 3:R   40:R
      */
     @Test
-    public void deleteANodeWithOnlyOneChild() {
+    public void deleteANodeWithOnlyOneChildRedReplacementRecoloring() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(4);
         tree.put(2);
@@ -270,7 +272,13 @@ public class RedBlackTreeTest {
         tree.put(3);
         tree.put(40);
         tree.rbtDelete(6);
-//        tree.rbtDelete(40);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("4:B"));
+        treeLol.add(Arrays.asList("2:B", "40:B"));
+        treeLol.add(Arrays.asList("1:R", "3:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(5));
     }
 
     /**
@@ -354,7 +362,7 @@ public class RedBlackTreeTest {
      */
 
     @Test
-    public void deletionCase2() {
+    public void deletionYnotNullXIsNullCase2() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.put(1);
         tree.put(2);
@@ -556,6 +564,13 @@ public class RedBlackTreeTest {
         assertThat(tree.getRoot(), is(nullValue()));
     }
 
+    /**
+     * z = 1, y = null, x= 1
+     *
+     *              2:B
+     *             /
+     *           1:B
+     */
     @Test
     public void deletionFromTreeWithTwoElements() {
         RedBlackTree<Integer> tree = new RedBlackTree<>();
@@ -571,13 +586,43 @@ public class RedBlackTreeTest {
         assertThat(root.key, equalTo(2));
     }
 
+    /**
+     * z = 2, y = null, x = 1. In rbDeleteFixUp x is recolored to BLACK
+     *
+     *          4:B
+                / \
+               /   \
+             2:B   7:B
+             /     / \
+           1:R   5:R 10:R
+     *
+     */
+    @Test
+    public void deleteReplaceWithLeftChildAndRecoloring() {
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
+        tree.put(4);
+        tree.put(2);
+        tree.put(10);
+        tree.put(1);
+        tree.put(5);
+        tree.put(7);
+        tree.rbtDelete(2);
+        List<List<String>> treeLol = new ArrayList<>();
+        treeLol.add(Arrays.asList("4:B"));
+        treeLol.add(Arrays.asList("1:B", "7:B"));
+        treeLol.add(Arrays.asList("5:R", "10:R"));
+        List<List<String>> levels = BinarySearchTree.traverseByLevelsAsString(tree.getRoot());
+        assertThat(levels, contains(treeLol.toArray()));
+        assertThat(tree.getSize(), equalTo(5));
+    }
+
     @Test
     public void tree0to19Delete() {
         RedBlackTree tree = new RedBlackTree();
         for (int i = 0; i < 20; i++) {
             tree.put(i);
         }
-        BTreePrinter.printNode(tree.getRoot());
+//        BTreePrinter.printNode(tree.getRoot());
         tree.rbtDelete(4);
         tree.rbtDelete(7);
         tree.rbtDelete(6);
@@ -595,24 +640,25 @@ public class RedBlackTreeTest {
         tree.rbtDelete(15);
         tree.rbtDelete(16);
         tree.rbtDelete(11);
-        BTreePrinter.printNode(tree.getRoot());
+//        BTreePrinter.printNode(tree.getRoot());
+        verifyRbtOf3Nodes(tree);
     }
 
     @Test
     public void randomTreeDelete() {
         Random random = new Random();
-        final int size = 100;
+        final int size = 1000;
         List<Integer> randomIntegers = new ArrayList<>(size);
         RedBlackTree tree = new RedBlackTree();
         for (int i = 0; i < size; i++) {
             int randomInt = random.nextInt(10_000);
-            randomIntegers.add(i);
-            tree.put(i);
+            randomIntegers.add(randomInt);
+            tree.put(randomInt);
         }
-        System.out.println(
-            randomIntegers.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(" ")));
+//        System.out.println("Random numbers: " +
+//                randomIntegers.stream()
+//                        .map(String::valueOf)
+//                        .collect(Collectors.joining(" ")));
 
         Collections.shuffle(randomIntegers);
         ArrayDeque<Integer> queue = new ArrayDeque<>(size);
@@ -620,10 +666,11 @@ public class RedBlackTreeTest {
 //        BTreePrinter.printNode(tree.getRoot());
         while (queue.size() >= 4) {
             int randomElement = queue.poll();
-            System.out.println("delete " + randomElement);
+//            System.out.println("delete " + randomElement);
             tree.rbtDelete(randomElement);
         }
-        BTreePrinter.printNode(tree.getRoot());
+//        BTreePrinter.printNode(tree.getRoot());
+        verifyRbtOf3Nodes(tree);
     }
 
 
@@ -638,5 +685,28 @@ public class RedBlackTreeTest {
     public void testDeleteNullFromTree() {
         Integer nullInteger = null;
         tree2.rbtDelete(nullInteger);
+    }
+
+    private void verifyRbtOf3Nodes(RedBlackTree<Integer> tree) {
+        RbtNode<Integer> root = (RbtNode<Integer>)tree.getRoot();
+        assertThat(tree.getSize(), equalTo(3));
+        assertThat(root.color, equalTo(RedBlackTree.BLACK));
+        RbtNode<Integer> left = (RbtNode<Integer>)root.left;
+        RbtNode<Integer> right = (RbtNode<Integer>)root.right;
+
+        assertThat(left, is(notNullValue()));
+        assertThat(left.parent, equalTo(root));
+
+        assertThat(right, is(notNullValue()));
+        assertThat(right.parent, equalTo(root));
+
+        assertThat(left.left, is(nullValue()));
+        assertThat(left.right, is(nullValue()));
+        assertThat(right.left, is(nullValue()));
+        assertThat(right.right, is(nullValue()));
+
+        // check color. should be the same
+        boolean leafColor = left.color;
+        assertThat(right.color, equalTo(leafColor));
     }
 }
