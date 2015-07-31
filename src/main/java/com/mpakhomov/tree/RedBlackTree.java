@@ -6,6 +6,7 @@ import java.util.Objects;
 /**
  * Based on Introduction to Algorithms, third edition
  * By Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein
+ * aka CLRS book
  *
  * @author mpakhomov
  * @since: 7/6/2015
@@ -105,46 +106,122 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree {
     public boolean rbtDelete(T key) {
         RbtNode<T> node = (RbtNode)search(key);
         if (node != null) {
-            rbtDelete((RbtNode) node);
+            rbtDelete1((RbtNode) node);
             return true;
         } else {
             return false;
         }
     }
 
-    void rbtDelete(RbtNode<T> p) {
-        if (size == 1 && p == root) {
+    /**
+     * Based on JDK's implementation of {@link java.util.TreeMap}
+     *
+     * @param z node to be deleted
+     */
+    void rbtDelete(RbtNode<T> z) {
+        if (size == 1 && z == root) {
             // we are the only mode
             root = null;
             size--;
             return;
         }
 
-        // If strictly internal, copy successor's element to p and then make p
-        // point to successor.
-        if (p.left != null && p.right != null) {
-            RbtNode<T> s = (RbtNode<T>)successor(p);
-            p.key = s.key;
-            p = s;
-        } // p has 2 children
+        // copy successor's element to z and then make z point to successor.
+        if (z.left != null && z.right != null) {
+            RbtNode<T> y = (RbtNode<T>)successor(z);
+            z.key = y.key;
+            z = y;
+        } // z has 2 children
 
         // Start fixup at replacement node, if it exists.
-        RbtNode<T> replacement = (RbtNode<T>)(p.left != null ? p.left : p.right);
+        RbtNode<T> replacement = (RbtNode<T>)(z.left != null ? z.left : z.right);
 
         if (replacement != null) {
             // Link replacement to parent
-            rbTransplant(p, replacement);
+            rbTransplant(z, replacement);
 
             // Fix replacement
-            if (p.color == BLACK) {
+            if (z.color == BLACK) {
                 rbDeleteFixUp(replacement);
             }
         } else {
             //  No children. Use self as phantom replacement and unlink.
-            if (p.color == BLACK) {
-                rbDeleteFixUp(p);
+            if (z.color == BLACK) {
+                rbDeleteFixUp(z);
             }
-            unlinkFromParentAndNullify(p);
+            unlinkFromParentAndNullify(z);
+        }
+        size--;
+    }
+
+
+    /**
+     * Based on CLRS and JDK's implementation of {@link java.util.TreeMap}
+     *
+     * z - node to be deleted
+     * y - z's successor
+     * x - replacement element. it can be either of the following:
+     *  - y's right child (when z has 2 children, y can have only one right child)
+     *  - y, when y has no children use y as a phantom replacement
+     *  - x.left or x.right, when z has only one child
+     *  - x, when z has no children
+     *
+     *  General idea:
+     *  - when z has one child, replace it with that child
+     *  - when z has 2 children, replace z with it's successor y. Replace y with its right child if one exist,
+     *    otherwise use y as a phantom replacement
+     *  - when z has no children, use z as a phantom replacement element
+     *
+     * @param z node to be deleted
+     */
+    void rbtDelete1(RbtNode<T> z) {
+        if (size == 1 && z == root) {
+            // we are the only mode
+            root = null;
+            size--;
+            return;
+        }
+
+        RbtNode<T> y = null, x = null;
+        boolean isPhantomReplacement = false;
+        boolean replacementColor = z.color;
+
+        if (z.left != null && z.right == null) {
+            // z has only left child. replace z with z.left
+            x = (RbtNode<T>) z.left;
+            rbTransplant(z, (RbtNode) z.left);
+        } else if (z.left == null && z.right != null) {
+            // z has only right child. replace z with z.right
+            x = (RbtNode<T>) z.right;
+            rbTransplant(z, (RbtNode) z.right);
+        } else  if (z.left != null && z.right != null) {
+            // z has 2 children
+            y = (RbtNode<T>) successor(z);
+            // replace z with its successor y
+            z.key = y.key;
+            // replacement element is a right child, because:
+            // if a node in a binary search tree has two children, then its successor has no left child
+            if (y.left != null) throw new RuntimeException("Can't happen");
+            x = (RbtNode<T>) y.right;
+            if (x != null) {
+                rbTransplant(y, x);
+            } else {
+                // use z's successor y as a phantom replacement element
+                x = y;
+                isPhantomReplacement = true;
+            }
+            replacementColor = y.color;
+        } else {
+            // z has no children. use z as a phantom replacement element
+            x = z;
+            isPhantomReplacement = true;
+        }
+
+        if (replacementColor == BLACK) {
+            rbDeleteFixUp(x);
+        }
+        if (isPhantomReplacement) {
+            unlinkFromParentAndNullify(x);
         }
         size--;
     }
