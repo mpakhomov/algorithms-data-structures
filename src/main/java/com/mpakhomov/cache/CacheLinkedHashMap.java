@@ -7,7 +7,7 @@ import java.util.Map;
  * Example implementation of LRU cache based on {@link LinkedHashMap}
  *
  * @author mpakhomov
- * @since: 7/10/2015
+ * @since 7/10/2015
  */
 public class CacheLinkedHashMap extends LinkedHashMap {
     private static final int MAX_ENTRIES = 3;
