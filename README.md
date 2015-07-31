@@ -17,5 +17,7 @@ Contents:
   * Singly Linked List
 * seq
    * Sequence: a bunch of utility methods: isSorted, joinIterators
+* cache
+   * simple LRU cache implementation based on java.util.LinkedHashMap
 
 
