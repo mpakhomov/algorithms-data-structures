@@ -1,6 +1,8 @@
 package com.mpakhomov.queue;
 
 /**
+ * Based on CircularFifoQueue<E> from org.apache.commons.collections4
+ *
  * Created with IntelliJ IDEA.
  * User: mpakhomov
  * Date: 8/13/13
