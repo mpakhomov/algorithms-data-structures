@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -92,6 +93,29 @@ public class SinglyLinkedListTest {
         list1.reverseRecursive();
         actual = list1.asList();
         assertThat(actual, contains(1));
+    }
+
+    @Test
+    public void testEqualsAndHashCode() {
+        SinglyLinkedList<Integer> list1 = new SinglyLinkedList<>();
+        IntStream.rangeClosed(1, 3).forEach(list1::add);
+
+        SinglyLinkedList<Integer> list2 = new SinglyLinkedList<>();
+        IntStream.rangeClosed(1, 3).forEach(list2::add);
+
+        SinglyLinkedList<Object> list3 = new SinglyLinkedList<>();
+        IntStream.rangeClosed(1, 3).forEach(i -> list3.add(Integer.valueOf(i)));
+
+        assertThat(list1, equalTo(list2));
+        assertThat(list2, equalTo(list3));
+        assertThat(list1.hashCode(), equalTo(list2.hashCode()));
+        assertThat(list2.hashCode(), equalTo(list3.hashCode()));
+
+        SinglyLinkedList<Integer> list4 = new SinglyLinkedList<>();
+        IntStream.rangeClosed(1, 4).forEach(list4::add);
+
+        assertThat(list1, not(equalTo(list4)));
+        assertThat(list1.hashCode(), not(equalTo(list4.hashCode())));
     }
 
 

@@ -175,4 +175,42 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         sb.append("]");
         return sb.toString();
     }
+
+    /**
+     * Note: since generics are nor reifiable, we had to use SinglyLinkedList&lt;?&gt; and Iterator&lt;?&gt; as
+     * the most specific type (see OReilly Java Generics And Collections book or {@link java.util.ArrayList}
+     * for more details)
+     *
+     * @{inheritDoc}
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof SinglyLinkedList<?>)) {
+            return false;
+        }
+
+        Iterator<T> e1 = iterator();
+        Iterator<?> e2 = ((SinglyLinkedList<?>) o).iterator();
+        while (e1.hasNext() && e2.hasNext()) {
+            T o1 = e1.next();
+            Object o2 = e2.next();
+            if (!(o1 == null ? o2 == null : o1.equals(o2))) {
+                return false;
+            }
+        }
+        return !(e1.hasNext() || e2.hasNext());
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 17;
+        for (T e : this) {
+            hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
+        }
+        return hashCode;
+    }
 }
