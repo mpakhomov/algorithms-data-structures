@@ -14,12 +14,31 @@ public class Sequence {
      * @param <T> type that implements {@link Comparable}
      * @return true if array is sorted, false otherwise
      */
-    public static <T extends Comparable<T>> boolean isSorted(T[] array) {
+    public static <T extends Comparable<? super T>> boolean isSorted(T[] array) {
         if (array.length < 2) {
             return true;
         }
         for (int i = 1; i < array.length; i++) {
             if (array[i - 1].compareTo(array[i]) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * checks if the array is sorted
+     *
+     * @param array the array
+     * @return true if sorted, false otherwise
+     */
+    public static boolean isSorted(int[] array) {
+        if (array.length < 2) {
+            return true;
+        }
+        for (int i = 1; i < array.length; i++) {
+            if (array[i - 1] > array[i]) {
                 return false;
             }
         }
@@ -32,7 +51,7 @@ public class Sequence {
      * @param <T> type that implements {@link Comparable}
      * @return true if the sequence is sorted, false otherwise
      */
-    public static <T extends Comparable<T>> boolean isSorted(Iterator<T> it) {
+    public static <T extends Comparable<? super T>> boolean isSorted(Iterator<T> it) {
         T prev  = null;
         while (it.hasNext()) {
             T cur = it.next();
@@ -50,7 +69,7 @@ public class Sequence {
      * @param <T> type that implements {@link Comparable}
      * @return true if the sequence is sorted, false otherwise
      */
-    public static <T extends Comparable<T>> boolean isSorted(List<T> list) {
+    public static <T extends Comparable<? super T>> boolean isSorted(List<T> list) {
         T prev = null;
         for (T e : list) {
             T cur = e;

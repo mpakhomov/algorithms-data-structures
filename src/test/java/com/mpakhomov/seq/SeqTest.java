@@ -3,11 +3,9 @@ package com.mpakhomov.seq;
 import org.junit.*;
 
 import java.util.*;
-import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 /**
@@ -53,5 +51,14 @@ public class SeqTest {
 
         // now it should point to null
         assertThat(it.next(), is(nullValue()));
+    }
+
+    @Test
+    public void testIntArrayIsSorted() {
+        int[] sorted = new int[] {1, 2, 3, 4};
+        int[] notSorted = new int[] {4, 3, 2, 1};
+
+        assertThat(Sequence.isSorted(sorted), is(true));
+        assertThat(Sequence.isSorted(notSorted), is(false));
     }
 }
