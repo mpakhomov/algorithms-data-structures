@@ -19,9 +19,10 @@ Contents:
    * Sequence: a bunch of utility methods: isSorted, joinIterators
 * cache
    * simple LRU cache implementation based on java.util.LinkedHashMap
-* Algorithms:
-   * Sorting:
+* Algorithms
+   * Sorting
      * Selection Sort
      * Insertion Sort
+     * Bubble Sort
 
 
