@@ -11,9 +11,7 @@ public class BalancedParenthesis {
                 stack.push(c);
             } else if (c == ')'){
                 // check if c is closing an open parenthesis
-                if (!stack.isEmpty() && stack.peekFirst() == '(') {
-                    stack.pop();
-                } else {
+                if (stack.isEmpty() || stack.pop() != '(') {
                     // if the closing parenthesis do not close anything previously opened, return false
                     return false;
                 }
@@ -22,12 +20,4 @@ public class BalancedParenthesis {
         // end of loop - check if all opened parenthesis were closed
         return stack.isEmpty();
     }
-
-    public static void main(String[] args) {
-        ArrayDeque<Character> stack = new ArrayDeque<>();
-        stack.peek();
-        stack.peekFirst();
-        BalancedParenthesis.check(":=)");
-    }
-
 }

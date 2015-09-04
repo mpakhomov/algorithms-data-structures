@@ -12,6 +12,7 @@ public class BalancedParenthesisTest {
 
     private String badStr = ":-)";
     private String badStr1 = "())(";
+    private String badStr2 = "((())(";
 
     @Test
     public void testGood() {
@@ -23,6 +24,7 @@ public class BalancedParenthesisTest {
     public void testBad() {
         assertThat(BalancedParenthesis.check(badStr), is(false));
         assertThat(BalancedParenthesis.check(badStr1), is(false));
+        assertThat(BalancedParenthesis.check(badStr2), is(false));
     }
 
 
