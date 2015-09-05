@@ -35,10 +35,11 @@ public class BalancedParenthesis {
             if (c == '(') {
                 stack.push(c);
             } else if (c == ')') {
-                // check if c is closing an open parenthesis
-                if (stack.isEmpty() || stack.pop() != '(') {
+                if (stack.isEmpty()) {
                     // if the closing parenthesis do not close anything previously opened, return false
                     return false;
+                } else {
+                    stack.pop();
                 }
             }
         }
@@ -113,7 +114,7 @@ public class BalancedParenthesis {
                         Lists.asList('(', stack.toArray(new Character[] {})) // same as x::xs
                 )
             : remaining.get(0) == ')' ? // if close parenthesis
-                !stack.isEmpty() && stack.get(0) == '(' &&
+                !stack.isEmpty() /*&& stack.get(0) == '('*/ &&
                         checkRecursiveFunctionalHelper(
                             remaining.subList(1, remaining.size()),
                             stack.subList(1, stack.size())
@@ -144,7 +145,7 @@ public class BalancedParenthesis {
                                 ImmutableList.<Character>builder().addAll(stack).add('(').build() // x::xs::'('
                         )
                     : remaining.get(0) == ')' ? // if close parenthesis
-                        !stack.isEmpty() && stack.get(stack.size() - 1) == '(' &&
+                        !stack.isEmpty() /*&& stack.get(stack.size() - 1) == '('*/ &&
                                 checkRecursiveFunctionalHelper1(
                                         remaining.subList(1, remaining.size()),
                                         stack.subList(0, stack.size() - 1)

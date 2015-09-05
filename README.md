@@ -24,5 +24,7 @@ Contents:
      * Selection Sort
      * Insertion Sort
      * Bubble Sort
+   * misc
+     * BalancedParenthesis
 
 
