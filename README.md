@@ -24,6 +24,7 @@ Contents:
      * Selection Sort
      * Insertion Sort
      * Bubble Sort
+     * LSD Radix sort for 32-bit integers
    * misc
      * BalancedParenthesis
 

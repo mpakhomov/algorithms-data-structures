@@ -4,6 +4,7 @@ bin/
 target/
 libs/
 tmp/
+docs/
 node_modules/
 .openshift/
  
