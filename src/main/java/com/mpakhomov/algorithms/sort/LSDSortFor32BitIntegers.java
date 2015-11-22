@@ -14,10 +14,10 @@ public class LSDSortFor32BitIntegers {
      * <p>
      * Examples:
      * <p>
-     * {@code byteToHexString(intToByte(0xFF123456, 0) == 0xFF}
-     * {@code byteToHexString(intToByte(0xFF123456, 1) == 0x12}
-     * {@code byteToHexString(intToByte(0xFF123456, 2) == 0x34}
-     * {@code byteToHexString(intToByte(0xFF123456, 2) == 0x56}
+     * {@code byteToHexString(getByte(0xFF123456, 0) == 0xFF}
+     * {@code byteToHexString(getByte(0xFF123456, 1) == 0x12}
+     * {@code byteToHexString(getByte(0xFF123456, 2) == 0x34}
+     * {@code byteToHexString(getByte(0xFF123456, 2) == 0x56}
      *
      *
      * @param n   32-bit integer
@@ -25,7 +25,7 @@ public class LSDSortFor32BitIntegers {
      *            pos == 3 gives the lowest byte
      * @return byte
      */
-    public static int intToByte(int n, int pos) {
+    public static int getByte(int n, int pos) {
         switch (pos) {
             case 0:
                 return (n >>> 24) & 0xFF;
@@ -83,7 +83,7 @@ public class LSDSortFor32BitIntegers {
 
             // count frequencies
             for (int i : a) {
-                count[intToByte(i, pos) + 1]++;
+                count[getByte(i, pos) + 1]++;
             }
 
             for (int r = 0; r < radix; r++) {
@@ -91,7 +91,7 @@ public class LSDSortFor32BitIntegers {
             }
 
             for (int i : a) {
-                aux[count[intToByte(i, pos)]++] = i;
+                aux[count[getByte(i, pos)]++] = i;
             }
 
             // copy back
