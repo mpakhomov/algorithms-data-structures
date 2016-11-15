@@ -10,13 +10,8 @@ import static org.junit.Assert.assertThat;
 /**
  * @author mpakhomov
  * @since 8/24/2015
+ * @see {@link SortingTests}
  */
 public class SelectionSortTest {
 
-    @Test
-    public void testSort() {
-        int[] a = TestUtil.generateRandomIntArray(100, 0, 100);
-        SelectionSort.sort(a);
-        assertThat(Sequence.isSorted(a), is(true));
-    }
 }

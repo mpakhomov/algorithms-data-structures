@@ -29,7 +29,7 @@ package com.mpakhomov.algorithms.sort;
  * @author mpakhomov
  * @since 8/24/2015
  */
-public class InsertionSort {
+public class InsertionSort implements Sorting {
 
     /**
      * sort the array
@@ -70,5 +70,10 @@ public class InsertionSort {
         int tmp = a[i];
         a[i] = a[j];
         a[j] = tmp;
+    }
+
+    @Override
+    public void instanceSort(int[] a) {
+        sort(a);
     }
 }

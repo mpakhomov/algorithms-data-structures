@@ -18,7 +18,7 @@ package com.mpakhomov.algorithms.sort;
  * @author mpakhomov
  * @since 8/24/2015
  */
-public class SelectionSort {
+public class SelectionSort implements Sorting {
 
     /**
      * sort the array into ascending order
@@ -47,5 +47,10 @@ public class SelectionSort {
         int tmp = a[i];
         a[i] = a[j];
         a[j] = tmp;
+    }
+
+    @Override
+    public void instanceSort(int[] a) {
+        sort(a);
     }
 }

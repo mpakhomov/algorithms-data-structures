@@ -14,21 +14,6 @@ import static org.junit.Assert.assertThat;
 public class InsertionSortTest {
 
     @Test
-    public void testSort() {
-        int[] a = new int[] {3, 7, 2, 5};
-        InsertionSort.sort(a);
-        assertThat(Sequence.isSorted(a), is(true));
-
-        int[] random = TestUtil.generateRandomIntArray(100, 0, 100);
-        InsertionSort.sort(random);
-        assertThat(Sequence.isSorted(random), is(true));
-
-        int[] sorted = new int[] {1, 2, 3, 4};
-        InsertionSort.sort(sorted);
-        assertThat(Sequence.isSorted(sorted), is(true));
-    }
-
-    @Test
     public void testSortWithArrayCopy() {
         int[] a = new int[] {3, 7, 2, 5};
         InsertionSort.sortWithArrayCopy(a);

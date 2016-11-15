@@ -4,7 +4,7 @@ package com.mpakhomov.algorithms.sort;
  * @author mpakhomov
  * @since 8/26/2015
  */
-public class MergeSort {
+public class MergeSort implements Sorting {
 
     static public void sort(int[] a) {
         // create an auxiliary array to run merge step of the algorithm
@@ -32,5 +32,10 @@ public class MergeSort {
             else if (aux[j] < aux[i]) a[k] = aux[j++];
             else a[k] = aux[i++];
         }
+    }
+
+    @Override
+    public void instanceSort(int[] a) {
+        sort(a);
     }
 }
