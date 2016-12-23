@@ -19,7 +19,7 @@ package com.mpakhomov.algorithms.sort;
  * @author mpakhomov
  * @since 8/26/2015
  */
-public class BubbleSort {
+public class BubbleSort implements Sorting {
 
     /**
      * naive version of bubble sort
@@ -60,5 +60,10 @@ public class BubbleSort {
         int tmp = a[i];
         a[i] = a[j];
         a[j] = tmp;
+    }
+
+    @Override
+    public void instanceSort(int[] a) {
+        sort(a);
     }
 }

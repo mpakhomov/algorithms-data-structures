@@ -8,7 +8,7 @@ import java.util.Objects;
  * @author mpakhomov
  * @since 11/22/15
  */
-public class LSDSortFor32BitIntegers {
+public class LSDSortFor32BitIntegers implements Sorting {
     /**
      * Breaks up 32-bit integer into 8-bit chunks (unsigned bytes), i.e each chunk is an integer within [0, 255]
      * <p>
@@ -97,5 +97,10 @@ public class LSDSortFor32BitIntegers {
             // copy back
             System.arraycopy(aux, 0, a, 0, N);
         }
+    }
+
+    @Override
+    public void instanceSort(int[] a) {
+        sort(a);
     }
 }

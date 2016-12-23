@@ -29,7 +29,7 @@ package com.mpakhomov.algorithms.sort;
  * @author mpakhomov
  * @since 8/24/2015
  */
-public class InsertionSort {
+public class InsertionSort implements Sorting {
 
     /**
      * sort the array
@@ -38,8 +38,8 @@ public class InsertionSort {
      */
     static public void sort(int[] a) {
         for (int i = 1; i < a.length; i++) {
-            for (int j = i - 1; j >= 0 && a[j] > a[j + 1]; j--) {
-                exch(a, j, j + 1);
+            for (int j = i; j > 0 && a[j] < a[j - 1]; j--) {
+                exch(a, j, j - 1);
             }
         }
     }
@@ -70,5 +70,10 @@ public class InsertionSort {
         int tmp = a[i];
         a[i] = a[j];
         a[j] = tmp;
+    }
+
+    @Override
+    public void instanceSort(int[] a) {
+        sort(a);
     }
 }

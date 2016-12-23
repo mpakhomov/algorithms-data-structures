@@ -25,6 +25,7 @@ Contents:
      * Insertion Sort
      * Bubble Sort
      * LSD Radix sort for 32-bit integers
+     * Binary Search
    * misc
      * BalancedParenthesis
 
