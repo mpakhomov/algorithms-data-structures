@@ -1,13 +1,12 @@
 package com.mpakhomov.algorithms.misc;
 
-import org.junit.*;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class SieveOfEratosthenesTests {
 

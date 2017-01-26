@@ -12,8 +12,8 @@ public class SieveOfEratosthenes {
         for (int i = 2; i <= n; i ++) primes[i] = true;
 
         for (int factor = 2; factor * factor <= n; factor++) {
-            // find the next prime
-            while(!primes[factor]) factor++;
+            // skip until the next prime
+           if (!primes[factor]) continue;
 
             // factor is a prime, now let's cross out all numbers divisible by factor
             for (int i = factor + 1; i <= n; i++)
