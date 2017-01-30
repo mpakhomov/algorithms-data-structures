@@ -16,8 +16,8 @@ public class SieveOfEratosthenes {
            if (!primes[factor]) continue;
 
             // factor is a prime, now let's cross out all numbers divisible by factor
-            for (int i = factor + 1; i <= n; i++)
-                if (i % factor == 0) primes[i] = false;
+            for (int i = factor + factor; i <= n; i += factor)
+                primes[i] = false;
         }
 
         List<Integer> results = new ArrayList<>();
