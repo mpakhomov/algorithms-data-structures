@@ -6,7 +6,7 @@ package com.mpakhomov.algorithms.misc;
  */
 public class ReverseWordsInSentence {
 
-    public static char[] reverse(char[] src) {
+    public static char[] reverseWords(char[] src) {
         int wordCount = 0;
         for (int i = 0; i < src.length; i++) if (src[i] == ' ') wordCount++;
         wordCount++;
@@ -40,7 +40,7 @@ public class ReverseWordsInSentence {
         return dest;
     }
 
-    public static char[] reverse1(char[] src) {
+    public static char[] reverseWords1(char[] src) {
         char[] dest = new char[src.length];
         for (int i = src.length - 1; i >= 0; i--) dest[src.length - 1 - i] = src[i];
 

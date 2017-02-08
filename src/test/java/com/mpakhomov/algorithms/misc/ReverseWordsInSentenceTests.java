@@ -10,13 +10,13 @@ public class ReverseWordsInSentenceTests {
     public void testReverse() {
         char[] src = "Today is Wednesday".toCharArray();
         char[] expected =  "Wednesday is Today".toCharArray();
-        assertArrayEquals(ReverseWordsInSentence.reverse(src), expected);
+        assertArrayEquals(ReverseWordsInSentence.reverseWords(src), expected);
     }
 
     @Test
     public void testReverse1() {
         char[] src = "Today is Wednesday".toCharArray();
         char[] expected =  "Wednesday is Today".toCharArray();
-        assertArrayEquals(ReverseWordsInSentence.reverse1(src), expected);
+        assertArrayEquals(ReverseWordsInSentence.reverseWords1(src), expected);
     }
 }
