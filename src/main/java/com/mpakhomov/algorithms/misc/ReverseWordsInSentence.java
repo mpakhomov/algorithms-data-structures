@@ -4,7 +4,7 @@ package com.mpakhomov.algorithms.misc;
      reverse words in sentence not using any library functions
      Today is Wednesday => Wednesday is Today
  */
-public class ReverseWordsInSentense {
+public class ReverseWordsInSentence {
 
     public static char[] reverse(char[] src) {
         int wordCount = 0;
@@ -56,8 +56,8 @@ public class ReverseWordsInSentense {
     }
 
     public static void reverseInPlace(char[] src, int lo, int hi) {
-        char[] word = slice(src, lo, hi);
-        for (int i = hi; i >= lo; i--) src[i] = word[hi - i];
+        int mid = (hi + lo) / 2;
+        for (int i = lo; i <= mid; i++) swap(src, i, hi - (i - lo));
     }
 
     public static void swap(char[] src, int i, int j) {
