@@ -47,4 +47,25 @@ public class ReverseWordsInSentenceTests {
         char[] expected =  "1 Wednesday  is  Today ".toCharArray();
         assertArrayEquals(ReverseWordsInSentence.reverseWords(src), expected);
     }
+
+    @Test
+    public void testOneWordOnly() {
+        char[] src = " Today ".toCharArray();
+        char[] expected =  " Today ".toCharArray();
+        assertArrayEquals(ReverseWordsInSentence.reverseWords(src), expected);
+    }
+
+    @Test
+    public void testEmptyString() {
+        char[] src = "".toCharArray();
+        char[] expected =  "".toCharArray();
+        assertArrayEquals(ReverseWordsInSentence.reverseWords(src), expected);
+    }
+
+    @Test
+    public void testEmptySentenceWithASpace() {
+        char[] src = " ".toCharArray();
+        char[] expected =  " ".toCharArray();
+        assertArrayEquals(ReverseWordsInSentence.reverseWords(src), expected);
+    }
 }
